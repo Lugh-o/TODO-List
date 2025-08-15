@@ -2,7 +2,7 @@ package com.acelerazg.todolist.task;
 
 import java.time.LocalDate;
 
-public class Task {
+public class Task implements Comparable<Task> {
     private int id;
     private String name;
     private String description;
@@ -12,10 +12,6 @@ public class Task {
     private LocalDate creationDate;
     private LocalDate modificationDate;
     private Status status;
-
-    public String getName() {
-        return name;
-    }
 
     public Task(int id, String name, String description, LocalDate endDate, int priority, String category, Status status) {
         this.id = id;
@@ -31,6 +27,15 @@ public class Task {
         this.creationDate = LocalDate.now();
         this.modificationDate = LocalDate.now();
         this.status = status;
+    }
+
+    @Override
+    public int compareTo(Task otherTask) {
+        return Integer.compare(getPriority(), otherTask.getPriority());
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {

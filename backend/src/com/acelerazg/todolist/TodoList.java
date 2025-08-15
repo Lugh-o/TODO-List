@@ -6,7 +6,10 @@ import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TodoList {
@@ -40,7 +43,13 @@ public class TodoList {
     }
 
     public Response<Map<Integer, Task>> getAllTasks() {
-        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, tasks);
+        List<Task> sortedTasks = new ArrayList<>(tasks.values());
+        Collections.sort(sortedTasks);
+        Map<Integer, Task> sortedMap = new LinkedHashMap<>();
+        for (Task task : sortedTasks) {
+            sortedMap.put(task.getId(), task);
+        }
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, sortedMap);
     }
 
     public Response<Task> updateTask(int id, String name, String description, LocalDate endDate,
