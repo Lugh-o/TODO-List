@@ -1,0 +1,52 @@
+package com.acelerazg.todolist.common;
+
+public final class Messages {
+
+    private Messages() {}
+
+    public static final String ERROR_INVALID_INPUT = "Invalid input: Name, description, category and status are required.";
+    public static final String ERROR_INVALID_ID = "Invalid ID: must be positive.";
+    public static final String ERROR_TASK_NOT_FOUND = "Task not found.";
+    public static final String ERROR_NO_TASKS_FOUND = "No tasks found.";
+    public static final String ERROR_EMPTY_NAME = "Task name cannot be empty";
+    public static final String ERROR_PRIORITY_RANGE = "Priority must be between 1 and 5";
+    public static final String ERROR_END_DATE_PAST = "End date cannot be in the past";
+
+    public static final String SUCCESS_TASK_CREATED = "Task created successfully.";
+    public static final String SUCCESS_TASK_RETRIEVED = "Task retrieved successfully.";
+    public static final String SUCCESS_TASKS_RETRIEVED = "Tasks retrieved successfully.";
+    public static final String SUCCESS_TASK_UPDATED = "Task updated successfully.";
+    public static final String SUCCESS_TASK_DELETED = "Task deleted successfully.";
+    public static final String SUCCESS_VALIDATION_PASSED = "Validation passed.";
+
+    public static final String MENU_OPTIONS = "\nChoose the operation you wish to do:\n" +
+                                                "1 - List all tasks\n" +
+                                                "2 - Get a task by Id\n" +
+                                                "3 - Create a new task\n" +
+                                                "4 - Update a task by Id\n" +
+                                                "5 - Delete a task by Id\n" +
+                                                "6 - List tasks with a filter\n" +
+                                                "7 - Exit Application";
+
+    public static final String EXITING_APP = "Exiting application...";
+    public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 7.";
+    public static final String PROMPT_TASK_ID = "Enter task ID: ";
+    public static final String PROMPT_NAME = "Name: ";
+    public static final String PROMPT_DESCRIPTION = "Description: ";
+    public static final String PROMPT_END_DATE = "End date (yyyy-MM-dd): ";
+    public static final String PROMPT_PRIORITY = "Priority (1-5): ";
+    public static final String PROMPT_CATEGORY = "Category: ";
+    public static final String PROMPT_STATUS = "Status (TODO, DOING, DONE): ";
+    public static final String PROMPT_UPDATE_ID = "Enter task ID to update: ";
+    public static final String PROMPT_NEW_NAME = "New name (leave blank to keep current): ";
+    public static final String PROMPT_NEW_DESCRIPTION = "New description (leave blank to keep current): ";
+    public static final String PROMPT_NEW_END_DATE = "New end date (yyyy-MM-dd, blank to keep current): ";
+    public static final String PROMPT_NEW_PRIORITY = "New priority (1-5, blank to keep current): ";
+    public static final String PROMPT_NEW_CATEGORY = "New category (leave blank to keep current): ";
+    public static final String PROMPT_NEW_STATUS = "New status (TODO, DOING, DONE, blank to keep current): ";
+    public static final String PROMPT_DELETE_ID = "Enter task ID to delete: ";
+    public static final String PROMPT_FILTER_CATEGORY = "Enter category to filter: ";
+    public static final String ERROR_INVALID_NUMBER = "Invalid number, try again: ";
+    public static final String ERROR_INVALID_DATE = "Invalid date format, please use yyyy-MM-dd: ";
+    public static final String ERROR_INVALID_STATUS = "Invalid status, use TODO, DOING, or DONE: ";
+}

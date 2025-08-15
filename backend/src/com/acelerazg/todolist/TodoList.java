@@ -1,7 +1,7 @@
 package com.acelerazg.todolist;
 
-import com.acelerazg.todolist.apimock.Messages;
-import com.acelerazg.todolist.apimock.Response;
+import com.acelerazg.todolist.common.Messages;
+import com.acelerazg.todolist.common.Response;
 import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 

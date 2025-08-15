@@ -1,4 +1,4 @@
-package com.acelerazg.todolist.apimock;
+package com.acelerazg.todolist.common;
 
 public class Response<T> {
     private int statusCode;

@@ -105,8 +105,8 @@ public class Task {
     public String toString() {
         return "{" +
                 "id=" + id +
-                ", name=" + name +
-                ", description=" + description +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 ", endDate=" + endDate +
                 ", priority=" + priority +
                 ", category='" + category + '\'' +
