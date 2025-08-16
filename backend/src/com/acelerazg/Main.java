@@ -98,8 +98,27 @@ public class Main {
         System.out.println(response.getMessage());
     }
 
-    //TODO
     private static void handleFilterTasks(TodoList todoList, Scanner scanner) {
+        while (true) {
+            System.out.println(Messages.PROMPT_FILTER_FIELD);
+            int field = readInt(scanner);
+            switch (field) {
+                case 1:
+                    int priority = readPriority(scanner);
+                    printTaskListResponse(todoList.getAllTasksByPriority(priority));
+                    return;
+                case 2:
+                    Status status = readStatus(scanner);
+                    printTaskListResponse(todoList.getAllTasksByStatus(status));
+                    return;
+                case 3:
+                    String category = readNonEmptyString(scanner, Messages.PROMPT_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
+                    printTaskListResponse(todoList.getAllTasksByCategory(category));
+                    return;
+                default:
+                    System.out.println(Messages.PROMPT_FILTER_RANGE);
+            }
+        }
     }
 
     private static void printTaskListResponse(Response<Map<Integer, Task>> response) {

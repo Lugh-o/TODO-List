@@ -6,11 +6,9 @@ import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class TodoList {
 
@@ -99,6 +97,41 @@ public class TodoList {
 
     private boolean isNullOrEmpty(String value) {
         return value == null || value.trim().isEmpty();
+    }
+
+    public Response<Map<Integer, Task>> getAllTasksByPriority(int priority) {
+        if (priority < 1 || priority > 5) {
+            return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
+        }
+        Map<Integer, Task> filteredTasks = filterTasks(task -> task.getPriority() == priority);
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+    }
+
+    public Response<Map<Integer, Task>> getAllTasksByStatus(Status status) {
+        if (status == null) {
+            return Response.error(400, Messages.ERROR_INVALID_INPUT);
+        }
+        Map<Integer, Task> filteredTasks = filterTasks(task -> task.getStatus() == status);
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+    }
+
+    public Response<Map<Integer, Task>> getAllTasksByCategory(String category) {
+        if (category == null || category.trim().isEmpty()) {
+            return Response.error(400, Messages.ERROR_INVALID_INPUT);
+        }
+        Map<Integer, Task> filteredTasks = filterTasks(task -> task.getCategory().equalsIgnoreCase(category));
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+    }
+
+    private Map<Integer, Task> filterTasks(Predicate<Task> predicate) {
+        return getAllTasks().getData().entrySet().stream()
+                .filter(entry -> predicate.test(entry.getValue()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
     }
 
     private Response<Void> validateTaskData(String name, String description, String category, Status status,

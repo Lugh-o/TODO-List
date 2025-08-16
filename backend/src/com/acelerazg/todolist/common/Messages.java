@@ -45,7 +45,11 @@ public final class Messages {
     public static final String PROMPT_NEW_CATEGORY = "New category (leave blank to keep current): ";
     public static final String PROMPT_NEW_STATUS = "New status (TODO, DOING, DONE, blank to keep current): ";
     public static final String PROMPT_DELETE_ID = "Enter task ID to delete: ";
-    public static final String PROMPT_FILTER_CATEGORY = "Enter category to filter: ";
+    public static final String PROMPT_FILTER_FIELD = "\nEnter field to filter: \n" +
+                                                        "1 - Priority\n" +
+                                                        "2 - Status\n" +
+                                                        "3 - Category\nEnter choice: ";
+    public static final String PROMPT_FILTER_RANGE = "Invalid field. Please choose 1, 2, or 3.";
     public static final String ERROR_INVALID_NUMBER = "Invalid number, try again: ";
     public static final String ERROR_INVALID_DATE = "Invalid date format, please use yyyy-MM-dd: ";
     public static final String ERROR_INVALID_STATUS = "Invalid status, use TODO, DOING, or DONE: ";
