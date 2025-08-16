@@ -5,6 +5,7 @@ public final class Messages {
     private Messages() {}
 
     public static final String ERROR_INVALID_INPUT = "Invalid input: Name, description, category and status are required.";
+    public static final String ERROR_EMPTY_INPUT = "Invalid input: Value cannot be empty";
     public static final String ERROR_INVALID_ID = "Invalid ID: must be positive.";
     public static final String ERROR_TASK_NOT_FOUND = "Task not found.";
     public static final String ERROR_NO_TASKS_FOUND = "No tasks found.";
@@ -13,6 +14,7 @@ public final class Messages {
     public static final String ERROR_EMPTY_CATEGORY = "Task category cannot be empty";
     public static final String ERROR_EMPTY_STATUS = "Task status cannot be empty";
     public static final String ERROR_PRIORITY_RANGE = "Priority must be between 1 and 5";
+    public static final String ERROR_END_DATE_EMPTY = "End date cannot be empty";
     public static final String ERROR_END_DATE_PAST = "End date cannot be in the past";
     public static final String SUCCESS_TASK_CREATED = "Task created successfully.";
     public static final String SUCCESS_TASK_RETRIEVED = "Task retrieved successfully.";
@@ -48,8 +50,9 @@ public final class Messages {
     public static final String PROMPT_FILTER_FIELD = "\nEnter field to filter: \n" +
                                                         "1 - Priority\n" +
                                                         "2 - Status\n" +
-                                                        "3 - Category\nEnter choice: ";
-    public static final String PROMPT_FILTER_RANGE = "Invalid field. Please choose 1, 2, or 3.";
+                                                        "3 - Category\n" +
+                                                        "4 - End Date";
+    public static final String PROMPT_FILTER_RANGE = "Invalid field. Please choose 1, 2, 3 or 4.";
     public static final String ERROR_INVALID_NUMBER = "Invalid number, try again: ";
     public static final String ERROR_INVALID_DATE = "Invalid date format, please use yyyy-MM-dd: ";
     public static final String ERROR_INVALID_STATUS = "Invalid status, use TODO, DOING, or DONE: ";

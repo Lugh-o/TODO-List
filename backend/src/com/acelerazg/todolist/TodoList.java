@@ -109,7 +109,7 @@ public class TodoList {
 
     public Response<Map<Integer, Task>> getAllTasksByStatus(Status status) {
         if (status == null) {
-            return Response.error(400, Messages.ERROR_INVALID_INPUT);
+            return Response.error(400, Messages.ERROR_EMPTY_INPUT);
         }
         Map<Integer, Task> filteredTasks = filterTasks(task -> task.getStatus() == status);
         return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
@@ -117,9 +117,19 @@ public class TodoList {
 
     public Response<Map<Integer, Task>> getAllTasksByCategory(String category) {
         if (category == null || category.trim().isEmpty()) {
-            return Response.error(400, Messages.ERROR_INVALID_INPUT);
+            return Response.error(400, Messages.ERROR_EMPTY_INPUT);
         }
         Map<Integer, Task> filteredTasks = filterTasks(task -> task.getCategory().equalsIgnoreCase(category));
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+    }
+
+    public Response<Map<Integer, Task>> getTasksByEndDate(LocalDate date) {
+        if (date == null) {
+            return Response.error(400, Messages.ERROR_EMPTY_INPUT);
+        }
+        Map<Integer, Task> filteredTasks = filterTasks(
+                task -> task.getEndDate() != null && task.getEndDate().isEqual(date)
+        );
         return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
     }
 

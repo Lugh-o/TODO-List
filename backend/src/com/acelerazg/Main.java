@@ -69,7 +69,7 @@ public class Main {
     private static void handleCreateTask(TodoList todoList, Scanner scanner) {
         String name = readNonEmptyString(scanner, Messages.PROMPT_NAME, Messages.ERROR_EMPTY_NAME);
         String description = readNonEmptyString(scanner, Messages.PROMPT_DESCRIPTION, Messages.ERROR_EMPTY_DESCRIPTION);
-        LocalDate endDate = readOptionalDateNotInPast(scanner, Messages.PROMPT_END_DATE);
+        LocalDate endDate = readDateNotInPast(scanner);
         int priority = readPriority(scanner);
         String category = readNonEmptyString(scanner, Messages.PROMPT_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = readStatus(scanner);
@@ -83,7 +83,7 @@ public class Main {
 
         String name = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_NAME, Messages.ERROR_EMPTY_NAME);
         String description = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_DESCRIPTION, Messages.ERROR_EMPTY_DESCRIPTION);
-        LocalDate endDate = readOptionalDateNotInPast(scanner, Messages.PROMPT_NEW_END_DATE);
+        LocalDate endDate = readOptionalDateNotInPast(scanner);
         Integer priority = readOptionalPriority(scanner);
         String category = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = readOptionalStatus(scanner);
@@ -114,6 +114,10 @@ public class Main {
                 case 3:
                     String category = readNonEmptyString(scanner, Messages.PROMPT_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
                     printTaskListResponse(todoList.getAllTasksByCategory(category));
+                    return;
+                case 4:
+                    LocalDate date = readDateNotInPast(scanner);
+                    printTaskListResponse(todoList.getTasksByEndDate(date));
                     return;
                 default:
                     System.out.println(Messages.PROMPT_FILTER_RANGE);
@@ -206,9 +210,29 @@ public class Main {
         }
     }
 
-    private static LocalDate readOptionalDateNotInPast(Scanner scanner, String prompt) {
+    private static LocalDate readDateNotInPast(Scanner scanner) {
         while (true) {
-            System.out.print(prompt);
+            System.out.print(Messages.PROMPT_END_DATE);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println(Messages.ERROR_END_DATE_EMPTY);
+                continue;
+            }
+            try {
+                LocalDate date = LocalDate.parse(input, DATE_FORMAT);
+                if (!date.isBefore(LocalDate.now())) {
+                    return date;
+                }
+                System.out.println(Messages.ERROR_END_DATE_PAST);
+            } catch (DateTimeParseException e) {
+                System.out.println(Messages.ERROR_INVALID_DATE);
+            }
+        }
+    }
+
+    private static LocalDate readOptionalDateNotInPast(Scanner scanner) {
+        while (true) {
+            System.out.print(Messages.PROMPT_NEW_END_DATE);
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
                 return null;
