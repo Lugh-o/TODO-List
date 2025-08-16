@@ -61,9 +61,7 @@ public class Main {
 
     private static void handleTaskCounting(TodoList todoList) {
         Map<Status, Integer> statusCount = todoList.getStatusCount().getData();
-        System.out.println("TODO: " + statusCount.get(Status.TODO) + "\n" +
-                           "DOING: " + statusCount.get(Status.DOING) + "\n" +
-                           "DONE: " + statusCount.get(Status.DONE) + "\n");
+        System.out.println(Messages.StatusCountMessage(statusCount.get(Status.TODO), statusCount.get(Status.DOING), statusCount.get(Status.DONE)));
     }
 
     private static void handleListAllTasks(TodoList todoList) {

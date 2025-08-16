@@ -25,7 +25,7 @@ public final class Messages {
     public static final String SUCCESS_VALIDATION_PASSED = "Validation passed.";
     public static final String SUCCESS_TASK_COUNT = "Task count retrieved successfully.";
 
-    public static final String MENU_OPTIONS = "\nChoose the operation you wish to do:\n" +
+    public static final String MENU_OPTIONS = "Choose the operation you wish to do:\n" +
                                                 "1 - List all tasks\n" +
                                                 "2 - Get a task by Id\n" +
                                                 "3 - Create a new task\n" +
@@ -51,13 +51,19 @@ public final class Messages {
     public static final String PROMPT_NEW_CATEGORY = "New category (leave blank to keep current): ";
     public static final String PROMPT_NEW_STATUS = "New status (TODO, DOING, DONE, blank to keep current): ";
     public static final String PROMPT_DELETE_ID = "Enter task ID to delete: ";
-    public static final String PROMPT_FILTER_FIELD = "\nEnter field to filter: \n" +
-                                                        "1 - Priority\n" +
-                                                        "2 - Status\n" +
-                                                        "3 - Category\n" +
-                                                        "4 - End Date";
+    public static final String PROMPT_FILTER_FIELD = "Enter field to filter: \n" +
+                                                     "1 - Priority\n" +
+                                                     "2 - Status\n" +
+                                                     "3 - Category\n" +
+                                                     "4 - End Date";
     public static final String PROMPT_FILTER_RANGE = "Invalid field. Please choose 1, 2, 3 or 4.";
     public static final String ERROR_INVALID_NUMBER = "Invalid number, try again: ";
     public static final String ERROR_INVALID_DATE = "Invalid date format, please use yyyy-MM-dd: ";
     public static final String ERROR_INVALID_STATUS = "Invalid status, use TODO, DOING, or DONE: ";
+
+    public static String StatusCountMessage(int todoCount, int doingCount, int doneCount){
+        return "TODO: " + todoCount + "\n" +
+               "DOING: " + doingCount + "\n" +
+               "DONE: " + doneCount;
+    }
 }
