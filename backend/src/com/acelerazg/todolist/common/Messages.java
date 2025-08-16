@@ -9,16 +9,17 @@ public final class Messages {
     public static final String ERROR_TASK_NOT_FOUND = "Task not found.";
     public static final String ERROR_NO_TASKS_FOUND = "No tasks found.";
     public static final String ERROR_EMPTY_NAME = "Task name cannot be empty";
+    public static final String ERROR_EMPTY_DESCRIPTION = "Task description cannot be empty";
+    public static final String ERROR_EMPTY_CATEGORY = "Task category cannot be empty";
+    public static final String ERROR_EMPTY_STATUS = "Task status cannot be empty";
     public static final String ERROR_PRIORITY_RANGE = "Priority must be between 1 and 5";
     public static final String ERROR_END_DATE_PAST = "End date cannot be in the past";
-
     public static final String SUCCESS_TASK_CREATED = "Task created successfully.";
     public static final String SUCCESS_TASK_RETRIEVED = "Task retrieved successfully.";
     public static final String SUCCESS_TASKS_RETRIEVED = "Tasks retrieved successfully.";
     public static final String SUCCESS_TASK_UPDATED = "Task updated successfully.";
     public static final String SUCCESS_TASK_DELETED = "Task deleted successfully.";
     public static final String SUCCESS_VALIDATION_PASSED = "Validation passed.";
-
     public static final String MENU_OPTIONS = "\nChoose the operation you wish to do:\n" +
                                                 "1 - List all tasks\n" +
                                                 "2 - Get a task by Id\n" +
@@ -27,7 +28,6 @@ public final class Messages {
                                                 "5 - Delete a task by Id\n" +
                                                 "6 - List tasks with a filter\n" +
                                                 "7 - Exit Application";
-
     public static final String EXITING_APP = "Exiting application...";
     public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 7.";
     public static final String PROMPT_TASK_ID = "Enter task ID: ";

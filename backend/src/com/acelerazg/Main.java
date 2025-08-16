@@ -67,22 +67,11 @@ public class Main {
     }
 
     private static void handleCreateTask(TodoList todoList, Scanner scanner) {
-        System.out.print(Messages.PROMPT_NAME);
-        String name = scanner.nextLine();
-
-        System.out.print(Messages.PROMPT_DESCRIPTION);
-        String description = scanner.nextLine();
-
-        System.out.print(Messages.PROMPT_END_DATE);
-        LocalDate endDate = readDate(scanner);
-
-        System.out.print(Messages.PROMPT_PRIORITY);
-        int priority = readInt(scanner);
-
-        System.out.print(Messages.PROMPT_CATEGORY);
-        String category = scanner.nextLine();
-
-        System.out.print(Messages.PROMPT_STATUS);
+        String name = readNonEmptyString(scanner, Messages.PROMPT_NAME, Messages.ERROR_EMPTY_NAME);
+        String description = readNonEmptyString(scanner, Messages.PROMPT_DESCRIPTION, Messages.ERROR_EMPTY_DESCRIPTION);
+        LocalDate endDate = readOptionalDateNotInPast(scanner, Messages.PROMPT_END_DATE);
+        int priority = readPriority(scanner);
+        String category = readNonEmptyString(scanner, Messages.PROMPT_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = readStatus(scanner);
 
         printSingleTaskResponse(todoList.createTask(name, description, endDate, priority, category, status));
@@ -92,22 +81,11 @@ public class Main {
         System.out.print(Messages.PROMPT_UPDATE_ID);
         int id = readInt(scanner);
 
-        System.out.print(Messages.PROMPT_NEW_NAME);
-        String name = scanner.nextLine();
-
-        System.out.print(Messages.PROMPT_NEW_DESCRIPTION);
-        String description = scanner.nextLine();
-
-        System.out.print(Messages.PROMPT_NEW_END_DATE);
-        LocalDate endDate = readOptionalDate(scanner);
-
-        System.out.print(Messages.PROMPT_NEW_PRIORITY);
-        Integer priority = readOptionalInt(scanner);
-
-        System.out.print(Messages.PROMPT_NEW_CATEGORY);
-        String category = scanner.nextLine();
-
-        System.out.print(Messages.PROMPT_NEW_STATUS);
+        String name = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_NAME, Messages.ERROR_EMPTY_NAME);
+        String description = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_DESCRIPTION, Messages.ERROR_EMPTY_DESCRIPTION);
+        LocalDate endDate = readOptionalDateNotInPast(scanner, Messages.PROMPT_NEW_END_DATE);
+        Integer priority = readOptionalPriority(scanner);
+        String category = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = readOptionalStatus(scanner);
 
         printSingleTaskResponse(todoList.updateTask(id, name, description, endDate, priority, category, status));
@@ -153,53 +131,109 @@ public class Main {
         }
     }
 
-    private static Integer readOptionalInt(Scanner scanner) {
-        String input = scanner.nextLine().trim();
-        if (input.isEmpty()) return null;
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            return null;
+    private static String readNonEmptyString(Scanner scanner, String prompt, String errorMessage) {
+        while (true) {
+            System.out.print(prompt);
+            String value = scanner.nextLine().trim();
+            if (!value.isEmpty()) {
+                return value;
+            }
+            System.out.println(errorMessage);
         }
     }
 
-    private static LocalDate readDate(Scanner scanner) {
+    private static String readOptionalNonEmptyString(Scanner scanner, String prompt, String errorMessage) {
         while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine();
+            String trimmed = input.trim();
+            if (input.isEmpty()) {
+                return null;
+            }
+            if (!trimmed.isEmpty()) {
+                return trimmed;
+            }
+            System.out.println(errorMessage);
+        }
+    }
+
+    private static int readPriority(Scanner scanner) {
+        while (true) {
+            System.out.print(Messages.PROMPT_PRIORITY);
+            int value = readInt(scanner);
+            if (value >= 1 && value <= 5) {
+                return value;
+            }
+            System.out.println(Messages.ERROR_PRIORITY_RANGE);
+        }
+    }
+
+    private static Integer readOptionalPriority(Scanner scanner) {
+        while (true) {
+            System.out.print(Messages.PROMPT_NEW_PRIORITY);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                return null;
+            }
             try {
-                return LocalDate.parse(scanner.nextLine().trim(), DATE_FORMAT);
-            } catch (DateTimeParseException e) {
-                System.out.print(Messages.ERROR_INVALID_DATE);
+                int value = Integer.parseInt(input);
+                if (value >= 1 && value <= 5) {
+                    return value;
+                }
+                System.out.println(Messages.ERROR_PRIORITY_RANGE);
+            } catch (NumberFormatException e) {
+                System.out.println(Messages.ERROR_INVALID_NUMBER);
             }
         }
     }
 
-    private static LocalDate readOptionalDate(Scanner scanner) {
-        String input = scanner.nextLine().trim();
-        if (input.isEmpty()) return null;
-        try {
-            return LocalDate.parse(input, DATE_FORMAT);
-        } catch (DateTimeParseException e) {
-            return null;
+    private static LocalDate readOptionalDateNotInPast(Scanner scanner, String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                return null;
+            }
+            try {
+                LocalDate date = LocalDate.parse(input, DATE_FORMAT);
+                if (!date.isBefore(LocalDate.now())) {
+                    return date;
+                }
+                System.out.println(Messages.ERROR_END_DATE_PAST);
+            } catch (DateTimeParseException e) {
+                System.out.println(Messages.ERROR_INVALID_DATE);
+            }
         }
     }
 
     private static Status readStatus(Scanner scanner) {
         while (true) {
+            System.out.print(Messages.PROMPT_STATUS);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println(Messages.ERROR_EMPTY_STATUS);
+                continue;
+            }
             try {
-                return Status.valueOf(scanner.nextLine().trim().toUpperCase());
+                return Status.valueOf(input.toUpperCase());
             } catch (IllegalArgumentException e) {
-                System.out.print(Messages.ERROR_INVALID_STATUS);
+                System.out.println(Messages.ERROR_INVALID_STATUS);
             }
         }
     }
 
     private static Status readOptionalStatus(Scanner scanner) {
-        String input = scanner.nextLine().trim();
-        if (input.isEmpty()) return null;
-        try {
-            return Status.valueOf(input.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
+        while (true) {
+            System.out.print(Messages.PROMPT_NEW_STATUS);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                return null;
+            }
+            try {
+                return Status.valueOf(input.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.out.println(Messages.ERROR_INVALID_STATUS);
+            }
         }
     }
 }
