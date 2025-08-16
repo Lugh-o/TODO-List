@@ -33,7 +33,8 @@ public final class Messages {
                                                 "5 - Delete a task by Id\n" +
                                                 "6 - List tasks with a filter\n" +
                                                 "7 - Check task count by status\n" +
-                                                "8 - Exit Application";
+                                                "q - Exit Application\n" +
+                                                "You can cancel an operation by submitting 'q'";
     public static final String EXITING_APP = "Exiting application...";
     public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 8.";
     public static final String PROMPT_TASK_ID = "Enter task ID: ";
