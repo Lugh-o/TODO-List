@@ -13,8 +13,11 @@ public class CsvUtilities {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    public static void saveTasksToCsv(Map<Integer, Task> tasks, String filePath) throws IOException {
+    public static void saveTasksToCsv(Map<Integer, Task> tasks, int nextId, String filePath) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write("nextId=" + nextId);
+            writer.newLine();
+
             writer.write("id,name,description,endDate,priority,category,status,creationDate,modificationDate");
             writer.newLine();
 
@@ -36,12 +39,18 @@ public class CsvUtilities {
         }
     }
 
-    public static Map<Integer, Task> loadTasksFromCsv(String filePath) throws IOException {
+
+    public static CsvData loadTasksFromCsv(String filePath) throws IOException {
         Map<Integer, Task> tasks = new LinkedHashMap<>();
+        int nextId = 1;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line = reader.readLine();
-
+            String firstLine = reader.readLine();
+            if (firstLine != null && firstLine.startsWith("nextId=")) {
+                nextId = Integer.parseInt(firstLine.substring("nextId=".length()));
+            }
+            reader.readLine();
+            String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = parseCsvLine(line);
 
@@ -58,12 +67,10 @@ public class CsvUtilities {
                 Task task = new Task(id, name, description, endDate, priority, category, status);
                 task.setCreationDate(creationDate);
                 task.setModificationDate(modificationDate);
-
                 tasks.put(id, task);
             }
         }
-
-        return tasks;
+        return new CsvData(tasks, nextId);
     }
 
     private static String[] parseCsvLine(String line) {

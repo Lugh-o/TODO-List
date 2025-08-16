@@ -2,6 +2,7 @@ package com.acelerazg.todolist;
 
 import com.acelerazg.todolist.common.Messages;
 import com.acelerazg.todolist.common.Response;
+import com.acelerazg.todolist.persistency.CsvData;
 import com.acelerazg.todolist.persistency.CsvUtilities;
 import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
@@ -144,18 +145,20 @@ public class TodoList {
         return Response.success(200,Messages.SUCCESS_TASK_COUNT, map);
     }
 
-    public Response<Map<Status, Integer>> saveDataToCsv(){
+    public Response<Void> saveDataToCsv(){
         try{
-            CsvUtilities.saveTasksToCsv(tasks, "tasks.csv");
+            CsvUtilities.saveTasksToCsv(tasks, nextId, "tasks.csv");
             return Response.success(200, Messages.SUCCESS_SAVE_DATA, null);
         } catch (IOException e) {
             return Response.error(500, Messages.ERROR_SAVE_DATA);
         }
     }
 
-    public Response<Map<Status, Integer>> loadDataFromCsv(){
+    public Response<Void> loadDataFromCsv(){
         try {
-            this.tasks = CsvUtilities.loadTasksFromCsv("tasks.csv");
+            CsvData data = CsvUtilities.loadTasksFromCsv("tasks.csv");
+            this.tasks = data.getTasks();
+            this.nextId = data.getNextId();
             return Response.success(200, Messages.SUCCESS_LOAD_DATA, null);
         } catch (IOException e) {
             return Response.error(500, Messages.ERROR_LOAD_DATA);
@@ -175,25 +178,20 @@ public class TodoList {
 
     private Response<Void> validateTaskData(String name, String description, String category, Status status,
                                             int priority, LocalDateTime endDate, boolean fullValidation) {
-
         if (fullValidation) {
             if (isNullOrEmpty(name) || isNullOrEmpty(description) || isNullOrEmpty(category) || status == null) {
                 return Response.error(400, Messages.ERROR_INVALID_INPUT);
             }
         }
-
         if (isNullOrEmpty(name)) {
             return Response.error(400, Messages.ERROR_EMPTY_NAME);
         }
-
         if (priority < 1 || priority > 5) {
             return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
         }
-
         if (endDate != null && endDate.isBefore(LocalDateTime.now())) {
             return Response.error(422, Messages.ERROR_END_DATE_PAST);
         }
-
         return Response.success(200, Messages.SUCCESS_VALIDATION_PASSED, null);
     }
 }
