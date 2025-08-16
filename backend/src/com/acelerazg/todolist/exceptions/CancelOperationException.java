@@ -1,4 +1,4 @@
-package com.acelerazg.todolist.common;
+package com.acelerazg.todolist.exceptions;
 
 public class CancelOperationException extends RuntimeException {
     public CancelOperationException() {

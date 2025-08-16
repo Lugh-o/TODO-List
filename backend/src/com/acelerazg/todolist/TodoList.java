@@ -2,9 +2,11 @@ package com.acelerazg.todolist;
 
 import com.acelerazg.todolist.common.Messages;
 import com.acelerazg.todolist.common.Response;
+import com.acelerazg.todolist.persistency.CsvUtilities;
 import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TodoList {
 
-    private final Map<Integer, Task> tasks = new LinkedHashMap<>();
+    private Map<Integer, Task> tasks = new LinkedHashMap<>();
     private int nextId = 1;
 
     public Response<Task> createTask(String name, String description, LocalDateTime endDate,
@@ -140,6 +142,24 @@ public class TodoList {
         map.put(Status.DOING, getAllTasksByStatus(Status.DOING).getData().size());
         map.put(Status.DONE, getAllTasksByStatus(Status.DONE).getData().size());
         return Response.success(200,Messages.SUCCESS_TASK_COUNT, map);
+    }
+
+    public Response<Map<Status, Integer>> saveDataToCsv(){
+        try{
+            CsvUtilities.saveTasksToCsv(tasks, "tasks.csv");
+            return Response.success(200, Messages.SUCCESS_SAVE_DATA, null);
+        } catch (IOException e) {
+            return Response.error(500, Messages.ERROR_SAVE_DATA);
+        }
+    }
+
+    public Response<Map<Status, Integer>> loadDataFromCsv(){
+        try {
+            this.tasks = CsvUtilities.loadTasksFromCsv("tasks.csv");
+            return Response.success(200, Messages.SUCCESS_LOAD_DATA, null);
+        } catch (IOException e) {
+            return Response.error(500, Messages.ERROR_LOAD_DATA);
+        }
     }
 
     private Map<Integer, Task> filterTasks(Predicate<Task> predicate) {

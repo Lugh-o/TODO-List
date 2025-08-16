@@ -16,6 +16,8 @@ public final class Messages {
     public static final String ERROR_PRIORITY_RANGE = "Priority must be between 1 and 5";
     public static final String ERROR_END_DATE_EMPTY = "End date cannot be empty";
     public static final String ERROR_END_DATE_PAST = "End date cannot be in the past";
+    public static final String ERROR_SAVE_DATA   = "Failed to save tasks to CSV.";
+    public static final String ERROR_LOAD_DATA   = "Failed to load tasks from CSV.";
 
     public static final String SUCCESS_TASK_CREATED = "Task created successfully.";
     public static final String SUCCESS_TASK_RETRIEVED = "Task retrieved successfully.";
@@ -24,6 +26,8 @@ public final class Messages {
     public static final String SUCCESS_TASK_DELETED = "Task deleted successfully.";
     public static final String SUCCESS_VALIDATION_PASSED = "Validation passed.";
     public static final String SUCCESS_TASK_COUNT = "Task count retrieved successfully.";
+    public static final String SUCCESS_SAVE_DATA = "Tasks saved to CSV successfully.";
+    public static final String SUCCESS_LOAD_DATA = "Tasks loaded from CSV successfully.";
 
     public static final String MENU_OPTIONS = "Choose the operation you wish to do:\n" +
                                                 "1 - List all tasks\n" +
@@ -33,7 +37,7 @@ public final class Messages {
                                                 "5 - Delete a task by Id\n" +
                                                 "6 - List tasks with a filter\n" +
                                                 "7 - Check task count by status\n" +
-                                                "q - Exit Application\n" +
+                                                "q - Exit application and save\n" +
                                                 "You can cancel an operation by submitting 'q'";
     public static final String EXITING_APP = "Exiting application...";
     public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 8.";

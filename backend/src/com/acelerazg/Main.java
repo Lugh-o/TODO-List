@@ -1,7 +1,7 @@
 package com.acelerazg;
 
 import com.acelerazg.todolist.TodoList;
-import com.acelerazg.todolist.common.CancelOperationException;
+import com.acelerazg.todolist.exceptions.CancelOperationException;
 import com.acelerazg.todolist.common.Messages;
 import com.acelerazg.todolist.common.Response;
 import com.acelerazg.todolist.task.Status;
@@ -22,6 +22,7 @@ public class Main {
     public static void main(String[] args) {
         TodoList todoList = new TodoList();
         String input = "";
+        System.out.println(todoList.loadDataFromCsv().getMessage());
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (!Objects.equals(input, "q")) {
@@ -52,6 +53,7 @@ public class Main {
                             break;
                         case "q":
                             System.out.println(Messages.EXITING_APP);
+                            System.out.println(todoList.saveDataToCsv().getMessage());
                             break;
                         default:
                             System.out.println(Messages.INVALID_OPTION);
