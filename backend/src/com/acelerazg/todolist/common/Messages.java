@@ -40,13 +40,14 @@ public final class Messages {
     public static final String PROMPT_NAME = "Name: ";
     public static final String PROMPT_DESCRIPTION = "Description: ";
     public static final String PROMPT_END_DATE = "End date (yyyy-MM-dd): ";
+    public static final String PROMPT_END_DATE_TIME = "End date (yyyy-MM-dd HH:mm): ";
     public static final String PROMPT_PRIORITY = "Priority (1-5): ";
     public static final String PROMPT_CATEGORY = "Category: ";
     public static final String PROMPT_STATUS = "Status (TODO, DOING, DONE): ";
     public static final String PROMPT_UPDATE_ID = "Enter task ID to update: ";
     public static final String PROMPT_NEW_NAME = "New name (leave blank to keep current): ";
     public static final String PROMPT_NEW_DESCRIPTION = "New description (leave blank to keep current): ";
-    public static final String PROMPT_NEW_END_DATE = "New end date (yyyy-MM-dd, blank to keep current): ";
+    public static final String PROMPT_NEW_END_DATE_TIME = "New end date time (yyyy-MM-dd HH:mm, blank to keep current): ";
     public static final String PROMPT_NEW_PRIORITY = "New priority (1-5, blank to keep current): ";
     public static final String PROMPT_NEW_CATEGORY = "New category (leave blank to keep current): ";
     public static final String PROMPT_NEW_STATUS = "New status (TODO, DOING, DONE, blank to keep current): ";
@@ -59,6 +60,7 @@ public final class Messages {
     public static final String PROMPT_FILTER_RANGE = "Invalid field. Please choose 1, 2, 3 or 4.";
     public static final String ERROR_INVALID_NUMBER = "Invalid number, try again: ";
     public static final String ERROR_INVALID_DATE = "Invalid date format, please use yyyy-MM-dd: ";
+    public static final String ERROR_INVALID_DATE_TIME = "Invalid date format, please use yyyy-MM-dd HH:mm: ";
     public static final String ERROR_INVALID_STATUS = "Invalid status, use TODO, DOING, or DONE: ";
 
     public static String StatusCountMessage(int todoCount, int doingCount, int doneCount){

@@ -6,6 +6,7 @@ import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ public class TodoList {
     private final Map<Integer, Task> tasks = new LinkedHashMap<>();
     private int nextId = 1;
 
-    public Response<Task> createTask(String name, String description, LocalDate endDate,
+    public Response<Task> createTask(String name, String description, LocalDateTime endDate,
                                      int priority, String category, Status status) {
 
         Response<Void> validationError = validateTaskData(name, description, category, status, priority, endDate, true);
@@ -50,7 +51,7 @@ public class TodoList {
         return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, sortedMap);
     }
 
-    public Response<Task> updateTask(int id, String name, String description, LocalDate endDate,
+    public Response<Task> updateTask(int id, String name, String description, LocalDateTime endDate,
                                      Integer priority, String category, Status status) {
 
         if (id <= 0) {
@@ -66,7 +67,7 @@ public class TodoList {
         String finalCategory = (category != null && !category.trim().isEmpty()) ? category : existing.getCategory();
         Status finalStatus = (status != null) ? status : existing.getStatus();
         int finalPriority = (priority != null) ? priority : existing.getPriority();
-        LocalDate finalEndDate = (endDate != null) ? endDate : existing.getEndDate();
+        LocalDateTime finalEndDate = (endDate != null) ? endDate : existing.getEndDate();
 
         Response<Void> validationError = validateTaskData(finalName, finalDescription, finalCategory, finalStatus, finalPriority, finalEndDate, false);
         if (validationError.getStatusCode() != 200) {
@@ -79,7 +80,7 @@ public class TodoList {
         existing.setStatus(finalStatus);
         existing.setPriority(finalPriority);
         existing.setEndDate(finalEndDate);
-        existing.setModificationDate(LocalDate.now());
+        existing.setModificationDate(LocalDateTime.now());
 
         return Response.success(200, Messages.SUCCESS_TASK_UPDATED, existing);
     }
@@ -128,7 +129,7 @@ public class TodoList {
             return Response.error(400, Messages.ERROR_EMPTY_INPUT);
         }
         Map<Integer, Task> filteredTasks = filterTasks(
-                task -> task.getEndDate() != null && task.getEndDate().isEqual(date)
+                task -> task.getEndDate() != null && task.getEndDate().toLocalDate().isEqual(date)
         );
         return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
     }
@@ -153,7 +154,7 @@ public class TodoList {
     }
 
     private Response<Void> validateTaskData(String name, String description, String category, Status status,
-                                            int priority, LocalDate endDate, boolean fullValidation) {
+                                            int priority, LocalDateTime endDate, boolean fullValidation) {
 
         if (fullValidation) {
             if (isNullOrEmpty(name) || isNullOrEmpty(description) || isNullOrEmpty(category) || status == null) {
@@ -169,7 +170,7 @@ public class TodoList {
             return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
         }
 
-        if (endDate != null && endDate.isBefore(LocalDate.now())) {
+        if (endDate != null && endDate.isBefore(LocalDateTime.now())) {
             return Response.error(422, Messages.ERROR_END_DATE_PAST);
         }
 

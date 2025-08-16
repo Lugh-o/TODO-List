@@ -1,19 +1,19 @@
 package com.acelerazg.todolist.task;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Task implements Comparable<Task> {
     private int id;
     private String name;
     private String description;
-    private LocalDate endDate;
+    private LocalDateTime endDate;
     private int priority;
     private String category;
-    private LocalDate creationDate;
-    private LocalDate modificationDate;
+    private LocalDateTime creationDate;
+    private LocalDateTime modificationDate;
     private Status status;
 
-    public Task(int id, String name, String description, LocalDate endDate, int priority, String category, Status status) {
+    public Task(int id, String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -24,8 +24,8 @@ public class Task implements Comparable<Task> {
         } else this.priority = Math.max(priority, 0);
 
         this.category = category;
-        this.creationDate = LocalDate.now();
-        this.modificationDate = LocalDate.now();
+        this.creationDate = LocalDateTime.now();
+        this.modificationDate = LocalDateTime.now();
         this.status = status;
     }
 
@@ -50,11 +50,11 @@ public class Task implements Comparable<Task> {
         this.description = description;
     }
 
-    public LocalDate getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
@@ -82,19 +82,19 @@ public class Task implements Comparable<Task> {
         this.id = id;
     }
 
-    public LocalDate getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDate creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public LocalDate getModificationDate() {
+    public LocalDateTime getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(LocalDate modificationDate) {
+    public void setModificationDate(LocalDateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
 

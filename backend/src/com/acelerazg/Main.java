@@ -7,6 +7,7 @@ import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Scanner;
 
 public class Main {
 
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static void main(String[] args) {
@@ -77,7 +79,7 @@ public class Main {
     private static void handleCreateTask(TodoList todoList, Scanner scanner) {
         String name = readNonEmptyString(scanner, Messages.PROMPT_NAME, Messages.ERROR_EMPTY_NAME);
         String description = readNonEmptyString(scanner, Messages.PROMPT_DESCRIPTION, Messages.ERROR_EMPTY_DESCRIPTION);
-        LocalDate endDate = readDateNotInPast(scanner);
+        LocalDateTime endDate = readDateTimeNotInPast(scanner);
         int priority = readPriority(scanner);
         String category = readNonEmptyString(scanner, Messages.PROMPT_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = readStatus(scanner);
@@ -91,7 +93,7 @@ public class Main {
 
         String name = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_NAME, Messages.ERROR_EMPTY_NAME);
         String description = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_DESCRIPTION, Messages.ERROR_EMPTY_DESCRIPTION);
-        LocalDate endDate = readOptionalDateNotInPast(scanner);
+        LocalDateTime endDate = readOptionalDateTimeNotInPast(scanner);
         Integer priority = readOptionalPriority(scanner);
         String category = readOptionalNonEmptyString(scanner, Messages.PROMPT_NEW_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = readOptionalStatus(scanner);
@@ -238,21 +240,41 @@ public class Main {
         }
     }
 
-    private static LocalDate readOptionalDateNotInPast(Scanner scanner) {
+    private static LocalDateTime readDateTimeNotInPast(Scanner scanner) {
         while (true) {
-            System.out.print(Messages.PROMPT_NEW_END_DATE);
+            System.out.print(Messages.PROMPT_END_DATE_TIME);
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println(Messages.ERROR_END_DATE_EMPTY);
+                continue;
+            }
+            try {
+                LocalDateTime date = LocalDateTime.parse(input, DATE_TIME_FORMAT);
+                if (!date.isBefore(LocalDateTime.now())) {
+                    return date;
+                }
+                System.out.println(Messages.ERROR_END_DATE_PAST);
+            } catch (DateTimeParseException e) {
+                System.out.println(Messages.ERROR_INVALID_DATE_TIME);
+            }
+        }
+    }
+
+    private static LocalDateTime readOptionalDateTimeNotInPast(Scanner scanner) {
+        while (true) {
+            System.out.print(Messages.PROMPT_NEW_END_DATE_TIME);
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) {
                 return null;
             }
             try {
-                LocalDate date = LocalDate.parse(input, DATE_FORMAT);
-                if (!date.isBefore(LocalDate.now())) {
+                LocalDateTime date = LocalDateTime.parse(input, DATE_TIME_FORMAT);
+                if (!date.isBefore(LocalDateTime.now())) {
                     return date;
                 }
                 System.out.println(Messages.ERROR_END_DATE_PAST);
             } catch (DateTimeParseException e) {
-                System.out.println(Messages.ERROR_INVALID_DATE);
+                System.out.println(Messages.ERROR_INVALID_DATE_TIME);
             }
         }
     }
