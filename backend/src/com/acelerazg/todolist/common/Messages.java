@@ -16,12 +16,15 @@ public final class Messages {
     public static final String ERROR_PRIORITY_RANGE = "Priority must be between 1 and 5";
     public static final String ERROR_END_DATE_EMPTY = "End date cannot be empty";
     public static final String ERROR_END_DATE_PAST = "End date cannot be in the past";
+
     public static final String SUCCESS_TASK_CREATED = "Task created successfully.";
     public static final String SUCCESS_TASK_RETRIEVED = "Task retrieved successfully.";
     public static final String SUCCESS_TASKS_RETRIEVED = "Tasks retrieved successfully.";
     public static final String SUCCESS_TASK_UPDATED = "Task updated successfully.";
     public static final String SUCCESS_TASK_DELETED = "Task deleted successfully.";
     public static final String SUCCESS_VALIDATION_PASSED = "Validation passed.";
+    public static final String SUCCESS_TASK_COUNT = "Task count retrieved successfully.";
+
     public static final String MENU_OPTIONS = "\nChoose the operation you wish to do:\n" +
                                                 "1 - List all tasks\n" +
                                                 "2 - Get a task by Id\n" +
@@ -29,9 +32,10 @@ public final class Messages {
                                                 "4 - Update a task by Id\n" +
                                                 "5 - Delete a task by Id\n" +
                                                 "6 - List tasks with a filter\n" +
-                                                "7 - Exit Application";
+                                                "7 - Check task count by status\n" +
+                                                "8 - Exit Application";
     public static final String EXITING_APP = "Exiting application...";
-    public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 7.";
+    public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 8.";
     public static final String PROMPT_TASK_ID = "Enter task ID: ";
     public static final String PROMPT_NAME = "Name: ";
     public static final String PROMPT_DESCRIPTION = "Description: ";

@@ -22,7 +22,7 @@ public class Main {
         String input = "";
 
         try (Scanner scanner = new Scanner(System.in)) {
-            while (!Objects.equals(input, "7")) {
+            while (!Objects.equals(input, "8")) {
                 System.out.println(Messages.MENU_OPTIONS);
                 input = scanner.nextLine().trim();
 
@@ -46,6 +46,9 @@ public class Main {
                         handleFilterTasks(todoList, scanner);
                         break;
                     case "7":
+                        handleTaskCounting(todoList);
+                        break;
+                    case "8":
                         System.out.println(Messages.EXITING_APP);
                         break;
                     default:
@@ -54,6 +57,13 @@ public class Main {
                 }
             }
         }
+    }
+
+    private static void handleTaskCounting(TodoList todoList) {
+        Map<Status, Integer> statusCount = todoList.getStatusCount().getData();
+        System.out.println("TODO: " + statusCount.get(Status.TODO) + "\n" +
+                           "DOING: " + statusCount.get(Status.DOING) + "\n" +
+                           "DONE: " + statusCount.get(Status.DONE) + "\n");
     }
 
     private static void handleListAllTasks(TodoList todoList) {

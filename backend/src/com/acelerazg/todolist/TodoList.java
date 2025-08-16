@@ -133,6 +133,14 @@ public class TodoList {
         return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
     }
 
+    public Response<Map<Status, Integer>> getStatusCount(){
+        Map<Status, Integer> map = new HashMap<>();
+        map.put(Status.TODO, getAllTasksByStatus(Status.TODO).getData().size());
+        map.put(Status.DOING, getAllTasksByStatus(Status.DOING).getData().size());
+        map.put(Status.DONE, getAllTasksByStatus(Status.DONE).getData().size());
+        return Response.success(200,Messages.SUCCESS_TASK_COUNT, map);
+    }
+
     private Map<Integer, Task> filterTasks(Predicate<Task> predicate) {
         return getAllTasks().getData().entrySet().stream()
                 .filter(entry -> predicate.test(entry.getValue()))
