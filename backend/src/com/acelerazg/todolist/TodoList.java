@@ -147,7 +147,7 @@ public class TodoList {
 
     public Response<Void> saveDataToCsv(){
         try{
-            CsvUtilities.saveTasksToCsv(tasks, nextId, "backend/data/tasks.csv");
+            CsvUtilities.saveTasksToCsv(tasks, nextId, "./data/tasks.csv");
             return Response.success(200, Messages.SUCCESS_SAVE_DATA, null);
         } catch (IOException e) {
             return Response.error(500, Messages.ERROR_SAVE_DATA);
@@ -156,7 +156,7 @@ public class TodoList {
 
     public Response<Void> loadDataFromCsv(){
         try {
-            CsvData data = CsvUtilities.loadTasksFromCsv("backend/data/tasks.csv");
+            CsvData data = CsvUtilities.loadTasksFromCsv("./data/tasks.csv");
             this.tasks = data.getTasks();
             this.nextId = data.getNextId();
             return Response.success(200, Messages.SUCCESS_LOAD_DATA, null);
