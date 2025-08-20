@@ -18,6 +18,14 @@ public final class Messages {
     public static final String ERROR_END_DATE_PAST = "End date cannot be in the past";
     public static final String ERROR_SAVE_DATA   = "Failed to save tasks to CSV.";
     public static final String ERROR_LOAD_DATA   = "Failed to load tasks from CSV.";
+    public static final String ERROR_INVALID_NUMBER = "Invalid number, try again: ";
+    public static final String ERROR_INVALID_DATE = "Invalid date format, please use yyyy-MM-dd: ";
+    public static final String ERROR_INVALID_DATE_TIME = "Invalid date format, please use yyyy-MM-dd HH:mm: ";
+    public static final String ERROR_INVALID_STATUS = "Invalid status, use TODO, DOING, or DONE: ";
+    public static final String ERROR_REMINDER_RANGE = "Invalid field. Please choose 1, 2 or 3 ";
+    public static final String ERROR_REMINDER_EMPTY_MESSAGE = "Reminder message cannot be empty";
+    public static final String ERROR_REMINDER_HOURS_RANGE = "Reminder antecedence must be greater than 1 hour.";
+    public static final String ERROR_REMINDER_NOT_FOUND = "Reminder not found.";
 
     public static final String SUCCESS_TASK_CREATED = "Task created successfully.";
     public static final String SUCCESS_TASK_RETRIEVED = "Task retrieved successfully.";
@@ -26,8 +34,10 @@ public final class Messages {
     public static final String SUCCESS_TASK_DELETED = "Task deleted successfully.";
     public static final String SUCCESS_VALIDATION_PASSED = "Validation passed.";
     public static final String SUCCESS_TASK_COUNT = "Task count retrieved successfully.";
-    public static final String SUCCESS_SAVE_DATA = "Tasks saved to CSV successfully.";
+    public static final String SUCCESS_SAVE_DATA = "Tasks saved to XML successfully.";
     public static final String SUCCESS_LOAD_DATA = "Tasks loaded from CSV successfully.";
+    public static final String SUCCESS_REMINDER_CREATED = "Reminder created successfully.";
+    public static final String SUCCESS_REMINDER_UPDATED = "Reminder updated successfully.";
 
     public static final String MENU_OPTIONS = "Choose the operation you wish to do:\n" +
                                                 "1 - List all tasks\n" +
@@ -37,10 +47,12 @@ public final class Messages {
                                                 "5 - Delete a task by Id\n" +
                                                 "6 - List tasks with a filter\n" +
                                                 "7 - Check task count by status\n" +
+                                                "8 - Manage reminders for a task\n" +
                                                 "q - Exit application and save\n" +
                                                 "You can cancel an operation by submitting 'q'";
     public static final String EXITING_APP = "Exiting application...";
     public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 8.";
+
     public static final String PROMPT_TASK_ID = "Enter task ID: ";
     public static final String PROMPT_NAME = "Name: ";
     public static final String PROMPT_DESCRIPTION = "Description: ";
@@ -63,10 +75,16 @@ public final class Messages {
                                                      "3 - Category\n" +
                                                      "4 - End Date";
     public static final String PROMPT_FILTER_RANGE = "Invalid field. Please choose 1, 2, 3 or 4.";
-    public static final String ERROR_INVALID_NUMBER = "Invalid number, try again: ";
-    public static final String ERROR_INVALID_DATE = "Invalid date format, please use yyyy-MM-dd: ";
-    public static final String ERROR_INVALID_DATE_TIME = "Invalid date format, please use yyyy-MM-dd HH:mm: ";
-    public static final String ERROR_INVALID_STATUS = "Invalid status, use TODO, DOING, or DONE: ";
+    public static final String PROMPT_REMINDER_OPTIONS = "Choose the operation you wish to do: \n" +
+                                                         "1 - Create a new Reminder \n" +
+                                                         "2 - Update a Reminder by Id \n" +
+                                                         "3 - Delete a Reminder by Id";
+    public static final String PROMPT_REMINDER_MESSAGE = "Reminder Message: ";
+    public static final String PROMPT_REMINDER_ANTECEDENCY = "Hours in advance to the task end date: ";
+    public static final String PROMPT_UPDATE_REMINDER_ID = "Enter reminder ID to update: ";
+    public static final String PROMPT_DELETE_REMINDER_ID = "Enter reminder ID to delete: ";
+    public static final String PROMPT_REMINDER_ID = "Enter Task ID to manage its reminders: ";
+
 
     public static String StatusCountMessage(int todoCount, int doingCount, int doneCount){
         return "TODO: " + todoCount + "\n" +

@@ -1,9 +1,11 @@
 package com.acelerazg.todolist.task;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Task implements Comparable<Task> {
-    private int id;
+    private final int id;
     private String name;
     private String description;
     private LocalDateTime endDate;
@@ -12,6 +14,7 @@ public class Task implements Comparable<Task> {
     private LocalDateTime creationDate;
     private LocalDateTime modificationDate;
     private Status status;
+    private Map<Integer, Reminder> reminders = new HashMap<>();
 
     public Task(int id, String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
         this.id = id;
@@ -27,6 +30,18 @@ public class Task implements Comparable<Task> {
         this.creationDate = LocalDateTime.now();
         this.modificationDate = LocalDateTime.now();
         this.status = status;
+    }
+
+    public HashMap<Integer, Reminder> getTriggeredReminders() {
+        HashMap<Integer, Reminder> triggeredReminders = new HashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+        for (Reminder reminder : reminders.values()) {
+            LocalDateTime remindTime = endDate.minusHours(reminder.getHoursInAdvance());
+            if (remindTime.isBefore(now)) {
+                triggeredReminders.put(reminder.getId(), reminder);
+            }
+        }
+        return triggeredReminders;
     }
 
     @Override
@@ -78,10 +93,6 @@ public class Task implements Comparable<Task> {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
@@ -106,6 +117,14 @@ public class Task implements Comparable<Task> {
         this.status = status;
     }
 
+    public Map<Integer, Reminder> getReminders() {
+        return reminders;
+    }
+
+    public void setReminders(Map<Integer, Reminder> reminders) {
+        this.reminders = reminders;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -115,9 +134,10 @@ public class Task implements Comparable<Task> {
                 ", endDate=" + endDate +
                 ", priority=" + priority +
                 ", category='" + category + '\'' +
-                ", status=" + status +
                 ", creationDate=" + creationDate +
                 ", modificationDate=" + modificationDate +
+                ", status=" + status +
+                ", reminders=" + reminders.values() +
                 '}';
     }
 }

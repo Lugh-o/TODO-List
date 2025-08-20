@@ -2,12 +2,12 @@ package com.acelerazg.todolist;
 
 import com.acelerazg.todolist.common.Messages;
 import com.acelerazg.todolist.common.Response;
-import com.acelerazg.todolist.persistency.CsvData;
-import com.acelerazg.todolist.persistency.CsvUtilities;
+import com.acelerazg.todolist.persistency.XmlData;
+import com.acelerazg.todolist.persistency.XmlUtilities;
+import com.acelerazg.todolist.task.Reminder;
 import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -16,8 +16,9 @@ import java.util.stream.Collectors;
 
 public class TodoList {
 
-    private Map<Integer, Task> tasks = new LinkedHashMap<>();
-    private int nextId = 1;
+    private Map<Integer, Task> tasks = new HashMap<>();
+    private int nextTaskId = 1;
+    private int nextReminderId = 1;
 
     public Response<Task> createTask(String name, String description, LocalDateTime endDate,
                                      int priority, String category, Status status) {
@@ -27,7 +28,7 @@ public class TodoList {
             return Response.error(validationError.getStatusCode(), validationError.getMessage());
         }
 
-        Task task = new Task(nextId++, name, description, endDate, priority, category, status);
+        Task task = new Task(nextTaskId++, name, description, endDate, priority, category, status);
         tasks.put(task.getId(), task);
 
         return Response.success(201, Messages.SUCCESS_TASK_CREATED, task);
@@ -60,6 +61,7 @@ public class TodoList {
         if (id <= 0) {
             return Response.error(400, Messages.ERROR_INVALID_ID);
         }
+
         Task existing = tasks.get(id);
         if (existing == null) {
             return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
@@ -96,6 +98,63 @@ public class TodoList {
             return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
         }
         tasks.remove(id);
+        return Response.success(204, Messages.SUCCESS_TASK_DELETED, null);
+    }
+
+    public Response<Task> createReminder(int taskId, String message, int hoursInAdvance){
+        Response<Void> validationError = validateReminderData(message, hoursInAdvance);
+        if (validationError.getStatusCode() != 200) {
+            return Response.error(validationError.getStatusCode(), validationError.getMessage());
+        }
+        if (taskId <= 0) {
+            return Response.error(400, Messages.ERROR_INVALID_ID);
+        }
+
+        Task task = tasks.get(taskId);
+
+        if (task == null) {
+            return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
+        }
+        Reminder reminder = new Reminder(nextReminderId++, message, hoursInAdvance);
+        Map<Integer, Reminder> newReminderList = task.getReminders();
+        newReminderList.put(reminder.getId(), reminder);
+        task.setReminders(newReminderList);
+
+        return Response.success(201, Messages.SUCCESS_REMINDER_CREATED, task);
+    }
+
+    public Response<Task> updateReminder(int taskId, int reminderId, String message, Integer hoursInAdvance) {
+        if (taskId <= 0 || reminderId <= 0) {
+            return Response.error(400, Messages.ERROR_INVALID_ID);
+        }
+
+        Task existingTask = tasks.get(taskId);
+        Reminder existingReminder = existingTask.getReminders().get(reminderId);
+        if (existingReminder == null) {
+            return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
+        }
+        String finalMessage = (message != null && !message.trim().isEmpty()) ? message : existingReminder.getMessage();
+        int finalHoursInAdvance = (hoursInAdvance != null) ? hoursInAdvance : existingReminder.getHoursInAdvance();
+        Response<Void> validationError = validateReminderData(finalMessage, finalHoursInAdvance);
+        if (validationError.getStatusCode() != 200) {
+            return Response.error(validationError.getStatusCode(), validationError.getMessage());
+        }
+        existingReminder.setMessage(finalMessage);
+        existingReminder.setHoursInAdvance(finalHoursInAdvance);
+        return Response.success(200, Messages.SUCCESS_REMINDER_UPDATED, existingTask);
+    }
+
+    public Response<Void> deleteReminder(int taskId, int reminderId) {
+        if (taskId <= 0 || reminderId <= 0) {
+            return Response.error(400, Messages.ERROR_INVALID_ID);
+        }
+        Task existingTask = tasks.get(taskId);
+
+        if (!existingTask.getReminders().containsKey(reminderId)) {
+            return Response.error(404, Messages.ERROR_REMINDER_NOT_FOUND);
+        }
+
+        existingTask.getReminders().remove(reminderId);
         return Response.success(204, Messages.SUCCESS_TASK_DELETED, null);
     }
 
@@ -145,22 +204,23 @@ public class TodoList {
         return Response.success(200,Messages.SUCCESS_TASK_COUNT, map);
     }
 
-    public Response<Void> saveDataToCsv(){
-        try{
-            CsvUtilities.saveTasksToCsv(tasks, nextId, "./data/tasks.csv");
+    public Response<Void> saveDataToXml(String filePath) {
+        try {
+            XmlUtilities.saveTasksToXml(tasks, nextTaskId, nextReminderId, filePath);
             return Response.success(200, Messages.SUCCESS_SAVE_DATA, null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.error(500, Messages.ERROR_SAVE_DATA);
         }
     }
 
-    public Response<Void> loadDataFromCsv(){
+    public Response<Void> loadDataFromXml(String filePath) {
         try {
-            CsvData data = CsvUtilities.loadTasksFromCsv("./data/tasks.csv");
+            XmlData data = XmlUtilities.loadTasksFromXml(filePath);
             this.tasks = data.getTasks();
-            this.nextId = data.getNextId();
+            this.nextTaskId = data.getNextTaskId();
+            this.nextReminderId = data.getNextReminderId();
             return Response.success(200, Messages.SUCCESS_LOAD_DATA, null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return Response.error(500, Messages.ERROR_LOAD_DATA);
         }
     }
@@ -191,6 +251,16 @@ public class TodoList {
         }
         if (endDate != null && endDate.isBefore(LocalDateTime.now())) {
             return Response.error(422, Messages.ERROR_END_DATE_PAST);
+        }
+        return Response.success(200, Messages.SUCCESS_VALIDATION_PASSED, null);
+    }
+
+    private Response<Void> validateReminderData(String message, int hoursInAdvance){
+        if (isNullOrEmpty(message)) {
+            return Response.error(400, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
+        }
+        if(hoursInAdvance <= 0){
+            return Response.error(422, Messages.ERROR_REMINDER_HOURS_RANGE);
         }
         return Response.success(200, Messages.SUCCESS_VALIDATION_PASSED, null);
     }

@@ -4,6 +4,7 @@ import com.acelerazg.todolist.TodoList;
 import com.acelerazg.todolist.exceptions.CancelOperationException;
 import com.acelerazg.todolist.common.Messages;
 import com.acelerazg.todolist.common.Response;
+import com.acelerazg.todolist.task.Reminder;
 import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
 
@@ -11,21 +12,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String DATA_FILE = "./data/tasks.xml";
 
     public static void main(String[] args) {
         TodoList todoList = new TodoList();
         String input = "";
-        System.out.println(todoList.loadDataFromCsv().getMessage());
+        System.out.println(todoList.loadDataFromXml(DATA_FILE).getMessage());
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (!Objects.equals(input, "q")) {
+                handleReminderTriggering(todoList);
                 System.out.println(Messages.MENU_OPTIONS);
                 input = scanner.nextLine().trim();
                 try {
@@ -51,9 +52,12 @@ public class Main {
                         case "7":
                             handleTaskCounting(todoList);
                             break;
+                        case "8":
+                            handleReminderManagement(todoList, scanner);
+                            break;
                         case "q":
                             System.out.println(Messages.EXITING_APP);
-                            System.out.println(todoList.saveDataToCsv().getMessage());
+                            System.out.println(todoList.saveDataToXml(DATA_FILE).getMessage());
                             break;
                         default:
                             System.out.println(Messages.INVALID_OPTION);
@@ -62,6 +66,62 @@ public class Main {
                 } catch (CancelOperationException e) {
                     System.out.println(e.getMessage());
                 }
+            }
+        }
+    }
+
+    private static void handleReminderTriggering(TodoList todoList) {
+        boolean found = false;
+        for (Task task : todoList.getAllTasks().getData().values()) {
+            if (task.getStatus() != Status.DONE) {
+                HashMap<Integer, Reminder> triggeredReminders = task.getTriggeredReminders();
+                if (!triggeredReminders.isEmpty()) {
+                    if (!found) {
+                        System.out.println("\n=== Triggered Reminders ===");
+                        found = true;
+                    }
+
+                    System.out.println("\nTask ID: " + task.getId() + " | End Date: " + task.getEndDate());
+                    System.out.println("Reminders:");
+
+                    for (Reminder reminder : triggeredReminders.values()) {
+                        System.out.println("  - [Reminder ID " + reminder.getId() + "] " + reminder.getMessage()
+                                + " (" + reminder.getHoursInAdvance() + "h before)\n");
+                    }
+                }
+            }
+
+        }
+    }
+
+    private static void handleReminderManagement(TodoList todoList, Scanner scanner){
+        System.out.print(Messages.PROMPT_REMINDER_ID);
+        int taskId = readInt(scanner);
+        printSingleTaskResponse(todoList.getTaskById(taskId));
+        while(true){
+            System.out.println(Messages.PROMPT_REMINDER_OPTIONS);
+            int option = readInt(scanner);
+            switch(option) {
+                case 1:
+                    String createMessage = readOptionalNonEmptyString(scanner, Messages.PROMPT_REMINDER_MESSAGE, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
+                    int createHoursInAdvance = readReminderHoursInAdvance(scanner);
+                    printSingleTaskResponse(todoList.createReminder(taskId, createMessage, createHoursInAdvance));
+                    return;
+                case 2:
+                    System.out.print(Messages.PROMPT_UPDATE_REMINDER_ID);
+                    int reminderId = readInt(scanner);
+                    String updateMessage = readOptionalNonEmptyString(scanner, Messages.PROMPT_REMINDER_MESSAGE, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
+                    int updateHoursInAdvance = readReminderHoursInAdvance(scanner);
+                    printSingleTaskResponse(todoList.updateReminder(taskId, reminderId, updateMessage, updateHoursInAdvance));
+                    return;
+                case 3:
+                    System.out.print(Messages.PROMPT_DELETE_REMINDER_ID);
+                    int deleteReminderId = readInt(scanner);
+                    Response<Void> response = todoList.deleteReminder(taskId, deleteReminderId);
+                    System.out.println(response.getMessage());
+                    return;
+                default:
+                    System.out.println(Messages.ERROR_REMINDER_RANGE);
             }
         }
     }
@@ -153,6 +213,25 @@ public class Main {
         System.out.println(response.getMessage());
         if (response.getStatusCode() < 400 && response.getData() != null) {
             System.out.println(response.getData());
+        }
+    }
+
+    private static int readReminderHoursInAdvance(Scanner scanner){
+        while (true) {
+            System.out.print(Messages.PROMPT_REMINDER_ANTECEDENCY);
+            String input = scanner.nextLine().trim();
+            if (input.equalsIgnoreCase("q")) {
+                throw new CancelOperationException();
+            }
+            try {
+                int value = Integer.parseInt(input);
+                if (value >= 1) {
+                    return value;
+                }
+                System.out.println(Messages.ERROR_REMINDER_HOURS_RANGE);
+            } catch (NumberFormatException e) {
+                System.out.print(Messages.ERROR_INVALID_NUMBER);
+            }
         }
     }
 
