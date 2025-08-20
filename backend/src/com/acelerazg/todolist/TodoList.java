@@ -23,139 +23,115 @@ public class TodoList {
     public Response<Task> createTask(String name, String description, LocalDateTime endDate,
                                      int priority, String category, Status status) {
 
-        Response<Void> validationError = validateTaskData(name, description, category, status, priority, endDate, true);
-        if (validationError.getStatusCode() != 200) {
-            return Response.error(validationError.getStatusCode(), validationError.getMessage());
-        }
+        Response<Void> validation = validateTaskData(name, description, category, status, priority, endDate, true);
+        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
 
         Task task = new Task(nextTaskId++, name, description, endDate, priority, category, status);
         tasks.put(task.getId(), task);
-
         return Response.success(201, Messages.SUCCESS_TASK_CREATED, task);
     }
 
     public Response<Task> getTaskById(int id) {
-        if (id <= 0) {
-            return Response.error(400, Messages.ERROR_INVALID_ID);
-        }
+        if (id <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
         Task task = tasks.get(id);
-        if (task == null) {
-            return Response.error(404, Messages.ERROR_NO_TASKS_FOUND);
-        }
-        return Response.success(200, Messages.SUCCESS_TASK_RETRIEVED, task);
+        return (task == null)
+                ? Response.error(404, Messages.ERROR_NO_TASKS_FOUND)
+                : Response.success(200, Messages.SUCCESS_TASK_RETRIEVED, task);
     }
 
     public Response<Map<Integer, Task>> getAllTasks() {
-        List<Task> sortedTasks = new ArrayList<>(tasks.values());
-        Collections.sort(sortedTasks);
-        Map<Integer, Task> sortedMap = new LinkedHashMap<>();
-        for (Task task : sortedTasks) {
-            sortedMap.put(task.getId(), task);
-        }
-        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, sortedMap);
+        return Response.success(
+                200,
+                Messages.SUCCESS_TASKS_RETRIEVED,
+                tasks.values().stream()
+                        .sorted()
+                        .collect(Collectors.toMap(Task::getId, t -> t, (e1, e2) -> e1, LinkedHashMap::new))
+        );
     }
 
     public Response<Task> updateTask(int id, String name, String description, LocalDateTime endDate,
                                      Integer priority, String category, Status status) {
 
-        if (id <= 0) {
-            return Response.error(400, Messages.ERROR_INVALID_ID);
-        }
+        if (id <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
 
-        Task existing = tasks.get(id);
-        if (existing == null) {
-            return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
-        }
+        Task task = tasks.get(id);
+        if (task == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
 
-        String finalName = (name != null && !name.trim().isEmpty()) ? name : existing.getName();
-        String finalDescription = (description != null && !description.trim().isEmpty()) ? description : existing.getDescription();
-        String finalCategory = (category != null && !category.trim().isEmpty()) ? category : existing.getCategory();
-        Status finalStatus = (status != null) ? status : existing.getStatus();
-        int finalPriority = (priority != null) ? priority : existing.getPriority();
-        LocalDateTime finalEndDate = (endDate != null) ? endDate : existing.getEndDate();
+        String finalName = firstNonEmpty(name, task.getName());
+        String finalDescription = firstNonEmpty(description, task.getDescription());
+        String finalCategory = firstNonEmpty(category, task.getCategory());
+        Status finalStatus = (status != null) ? status : task.getStatus();
+        int finalPriority = (priority != null) ? priority : task.getPriority();
+        LocalDateTime finalEndDate = (endDate != null) ? endDate : task.getEndDate();
 
-        Response<Void> validationError = validateTaskData(finalName, finalDescription, finalCategory, finalStatus, finalPriority, finalEndDate, false);
-        if (validationError.getStatusCode() != 200) {
-            return Response.error(validationError.getStatusCode(), validationError.getMessage());
-        }
+        Response<Void> validation = validateTaskData(finalName, finalDescription, finalCategory, finalStatus, finalPriority, finalEndDate, false);
+        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
 
-        existing.setName(finalName);
-        existing.setDescription(finalDescription);
-        existing.setCategory(finalCategory);
-        existing.setStatus(finalStatus);
-        existing.setPriority(finalPriority);
-        existing.setEndDate(finalEndDate);
-        existing.setModificationDate(LocalDateTime.now());
+        task.setName(finalName);
+        task.setDescription(finalDescription);
+        task.setCategory(finalCategory);
+        task.setStatus(finalStatus);
+        task.setPriority(finalPriority);
+        task.setEndDate(finalEndDate);
+        task.setModificationDate(LocalDateTime.now());
 
-        return Response.success(200, Messages.SUCCESS_TASK_UPDATED, existing);
+        return Response.success(200, Messages.SUCCESS_TASK_UPDATED, task);
     }
 
     public Response<Void> deleteTask(int id) {
-        if (id <= 0) {
-            return Response.error(400, Messages.ERROR_INVALID_ID);
-        }
-        if (!tasks.containsKey(id)) {
-            return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
-        }
+        if (id <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
+        if (!tasks.containsKey(id)) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
         tasks.remove(id);
         return Response.success(204, Messages.SUCCESS_TASK_DELETED, null);
     }
 
     public Response<Task> createReminder(int taskId, String message, int hoursInAdvance){
-        Response<Void> validationError = validateReminderData(message, hoursInAdvance);
-        if (validationError.getStatusCode() != 200) {
-            return Response.error(validationError.getStatusCode(), validationError.getMessage());
-        }
-        if (taskId <= 0) {
-            return Response.error(400, Messages.ERROR_INVALID_ID);
-        }
+        Response<Void> validation = validateReminderData(message, hoursInAdvance);
+        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
+        if (taskId <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
 
         Task task = tasks.get(taskId);
+        if (task == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
 
-        if (task == null) {
-            return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
-        }
         Reminder reminder = new Reminder(nextReminderId++, message, hoursInAdvance);
-        Map<Integer, Reminder> newReminderList = task.getReminders();
-        newReminderList.put(reminder.getId(), reminder);
-        task.setReminders(newReminderList);
+        task.getReminders().put(reminder.getId(), reminder);
 
         return Response.success(201, Messages.SUCCESS_REMINDER_CREATED, task);
     }
 
     public Response<Task> updateReminder(int taskId, int reminderId, String message, Integer hoursInAdvance) {
-        if (taskId <= 0 || reminderId <= 0) {
-            return Response.error(400, Messages.ERROR_INVALID_ID);
-        }
+        if (taskId <= 0 || reminderId <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
 
-        Task existingTask = tasks.get(taskId);
-        Reminder existingReminder = existingTask.getReminders().get(reminderId);
-        if (existingReminder == null) {
-            return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
-        }
-        String finalMessage = (message != null && !message.trim().isEmpty()) ? message : existingReminder.getMessage();
-        int finalHoursInAdvance = (hoursInAdvance != null) ? hoursInAdvance : existingReminder.getHoursInAdvance();
-        Response<Void> validationError = validateReminderData(finalMessage, finalHoursInAdvance);
-        if (validationError.getStatusCode() != 200) {
-            return Response.error(validationError.getStatusCode(), validationError.getMessage());
-        }
-        existingReminder.setMessage(finalMessage);
-        existingReminder.setHoursInAdvance(finalHoursInAdvance);
-        return Response.success(200, Messages.SUCCESS_REMINDER_UPDATED, existingTask);
+        Task task = tasks.get(taskId);
+        if (task == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
+
+        Reminder reminder = task.getReminders().get(reminderId);
+        if (reminder == null) return Response.error(404, Messages.ERROR_REMINDER_NOT_FOUND);
+
+        String finalMessage = firstNonEmpty(message, reminder.getMessage());
+        int finalHours = (hoursInAdvance != null) ? hoursInAdvance : reminder.getHoursInAdvance();
+
+        Response<Void> validation = validateReminderData(finalMessage, finalHours);
+        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
+
+        reminder.setMessage(finalMessage);
+        reminder.setHoursInAdvance(finalHours);
+
+        return Response.success(200, Messages.SUCCESS_REMINDER_UPDATED, task);
     }
 
     public Response<Void> deleteReminder(int taskId, int reminderId) {
-        if (taskId <= 0 || reminderId <= 0) {
-            return Response.error(400, Messages.ERROR_INVALID_ID);
-        }
-        Task existingTask = tasks.get(taskId);
-
-        if (!existingTask.getReminders().containsKey(reminderId)) {
+        if (taskId <= 0 || reminderId <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
+        Task task = tasks.get(taskId);
+        if (task == null || !task.getReminders().containsKey(reminderId)) {
             return Response.error(404, Messages.ERROR_REMINDER_NOT_FOUND);
         }
-
-        existingTask.getReminders().remove(reminderId);
+        task.getReminders().remove(reminderId);
         return Response.success(204, Messages.SUCCESS_TASK_DELETED, null);
+    }
+
+    private String firstNonEmpty(String value, String fallback) {
+        return (value != null && !value.trim().isEmpty()) ? value : fallback;
     }
 
     private boolean isNullOrEmpty(String value) {
@@ -163,45 +139,30 @@ public class TodoList {
     }
 
     public Response<Map<Integer, Task>> getAllTasksByPriority(int priority) {
-        if (priority < 1 || priority > 5) {
-            return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
-        }
-        Map<Integer, Task> filteredTasks = filterTasks(task -> task.getPriority() == priority);
-        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+        if (priority < 1 || priority > 5) return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filterTasks(t -> t.getPriority() == priority));
     }
 
     public Response<Map<Integer, Task>> getAllTasksByStatus(Status status) {
-        if (status == null) {
-            return Response.error(400, Messages.ERROR_EMPTY_INPUT);
-        }
-        Map<Integer, Task> filteredTasks = filterTasks(task -> task.getStatus() == status);
-        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+        if (status == null) return Response.error(400, Messages.ERROR_EMPTY_INPUT);
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filterTasks(t -> t.getStatus() == status));
     }
 
     public Response<Map<Integer, Task>> getAllTasksByCategory(String category) {
-        if (category == null || category.trim().isEmpty()) {
-            return Response.error(400, Messages.ERROR_EMPTY_INPUT);
-        }
-        Map<Integer, Task> filteredTasks = filterTasks(task -> task.getCategory().equalsIgnoreCase(category));
-        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+        if (isNullOrEmpty(category)) return Response.error(400, Messages.ERROR_EMPTY_INPUT);
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filterTasks(t -> t.getCategory().equalsIgnoreCase(category)));
     }
 
     public Response<Map<Integer, Task>> getTasksByEndDate(LocalDate date) {
-        if (date == null) {
-            return Response.error(400, Messages.ERROR_EMPTY_INPUT);
-        }
-        Map<Integer, Task> filteredTasks = filterTasks(
-                task -> task.getEndDate() != null && task.getEndDate().toLocalDate().isEqual(date)
-        );
-        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, filteredTasks);
+        if (date == null) return Response.error(400, Messages.ERROR_EMPTY_INPUT);
+        return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED,
+                filterTasks(t -> t.getEndDate() != null && t.getEndDate().toLocalDate().isEqual(date)));
     }
 
     public Response<Map<Status, Integer>> getStatusCount(){
-        Map<Status, Integer> map = new HashMap<>();
-        map.put(Status.TODO, getAllTasksByStatus(Status.TODO).getData().size());
-        map.put(Status.DOING, getAllTasksByStatus(Status.DOING).getData().size());
-        map.put(Status.DONE, getAllTasksByStatus(Status.DONE).getData().size());
-        return Response.success(200,Messages.SUCCESS_TASK_COUNT, map);
+        Map<Status, Integer> map = Arrays.stream(Status.values())
+                .collect(Collectors.toMap(s -> s, s -> getAllTasksByStatus(s).getData().size()));
+        return Response.success(200, Messages.SUCCESS_TASK_COUNT, map);
     }
 
     public Response<Void> saveDataToXml(String filePath) {
@@ -226,42 +187,25 @@ public class TodoList {
     }
 
     private Map<Integer, Task> filterTasks(Predicate<Task> predicate) {
-        return getAllTasks().getData().entrySet().stream()
-                .filter(entry -> predicate.test(entry.getValue()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
+        return getAllTasks().getData().values().stream()
+                .filter(predicate)
+                .collect(Collectors.toMap(Task::getId, t -> t, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
     private Response<Void> validateTaskData(String name, String description, String category, Status status,
                                             int priority, LocalDateTime endDate, boolean fullValidation) {
-        if (fullValidation) {
-            if (isNullOrEmpty(name) || isNullOrEmpty(description) || isNullOrEmpty(category) || status == null) {
-                return Response.error(400, Messages.ERROR_INVALID_INPUT);
-            }
+        if (fullValidation && (isNullOrEmpty(name) || isNullOrEmpty(description) || isNullOrEmpty(category) || status == null)) {
+            return Response.error(400, Messages.ERROR_INVALID_INPUT);
         }
-        if (isNullOrEmpty(name)) {
-            return Response.error(400, Messages.ERROR_EMPTY_NAME);
-        }
-        if (priority < 1 || priority > 5) {
-            return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
-        }
-        if (endDate != null && endDate.isBefore(LocalDateTime.now())) {
-            return Response.error(422, Messages.ERROR_END_DATE_PAST);
-        }
+        if (isNullOrEmpty(name)) return Response.error(400, Messages.ERROR_EMPTY_NAME);
+        if (priority < 1 || priority > 5) return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
+        if (endDate != null && endDate.isBefore(LocalDateTime.now())) return Response.error(422, Messages.ERROR_END_DATE_PAST);
         return Response.success(200, Messages.SUCCESS_VALIDATION_PASSED, null);
     }
 
     private Response<Void> validateReminderData(String message, int hoursInAdvance){
-        if (isNullOrEmpty(message)) {
-            return Response.error(400, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
-        }
-        if(hoursInAdvance <= 0){
-            return Response.error(422, Messages.ERROR_REMINDER_HOURS_RANGE);
-        }
+        if (isNullOrEmpty(message)) return Response.error(400, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
+        if (hoursInAdvance <= 0) return Response.error(422, Messages.ERROR_REMINDER_HOURS_RANGE);
         return Response.success(200, Messages.SUCCESS_VALIDATION_PASSED, null);
     }
 }

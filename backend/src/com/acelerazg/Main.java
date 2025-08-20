@@ -103,15 +103,15 @@ public class Main {
             int option = readInt(scanner);
             switch(option) {
                 case 1:
-                    String createMessage = readOptionalNonEmptyString(scanner, Messages.PROMPT_REMINDER_MESSAGE, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
+                    String createMessage = readNonEmptyString(scanner, Messages.PROMPT_REMINDER_MESSAGE, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
                     int createHoursInAdvance = readReminderHoursInAdvance(scanner);
                     printSingleTaskResponse(todoList.createReminder(taskId, createMessage, createHoursInAdvance));
                     return;
                 case 2:
                     System.out.print(Messages.PROMPT_UPDATE_REMINDER_ID);
                     int reminderId = readInt(scanner);
-                    String updateMessage = readOptionalNonEmptyString(scanner, Messages.PROMPT_REMINDER_MESSAGE, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
-                    int updateHoursInAdvance = readReminderHoursInAdvance(scanner);
+                    String updateMessage = readOptionalNonEmptyString(scanner, Messages.PROMPT_UPDATE_REMINDER_MESSAGE, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
+                    Integer updateHoursInAdvance = readOptionalReminderHoursInAdvance(scanner);
                     printSingleTaskResponse(todoList.updateReminder(taskId, reminderId, updateMessage, updateHoursInAdvance));
                     return;
                 case 3:
@@ -230,7 +230,24 @@ public class Main {
                 }
                 System.out.println(Messages.ERROR_REMINDER_HOURS_RANGE);
             } catch (NumberFormatException e) {
-                System.out.print(Messages.ERROR_INVALID_NUMBER);
+                System.out.println(Messages.ERROR_INVALID_NUMBER);
+            }
+        }
+    }
+
+    private static Integer readOptionalReminderHoursInAdvance(Scanner scanner){
+        while (true) {
+            System.out.print(Messages.PROMPT_UPDATE_REMINDER_ANTECEDENCY);
+            String input = scanner.nextLine().trim();
+            if (input.equalsIgnoreCase("q")) throw new CancelOperationException();
+            if (input.isEmpty()) return null;
+            try {
+                int value = Integer.parseInt(input);
+                if (value >= 1) return value;
+
+                System.out.println(Messages.ERROR_REMINDER_HOURS_RANGE);
+            } catch (NumberFormatException e) {
+                System.out.println(Messages.ERROR_INVALID_NUMBER);
             }
         }
     }
@@ -242,7 +259,7 @@ public class Main {
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.print(Messages.ERROR_INVALID_NUMBER);
+                System.out.println(Messages.ERROR_INVALID_NUMBER);
             }
         }
     }
@@ -279,7 +296,7 @@ public class Main {
                 if (value >= 1 && value <= 5) return value;
                 System.out.println(Messages.ERROR_PRIORITY_RANGE);
             } catch (NumberFormatException e) {
-                System.out.print(Messages.ERROR_INVALID_NUMBER);
+                System.out.println(Messages.ERROR_INVALID_NUMBER);
             }
         }
     }
