@@ -1,9 +1,9 @@
 package com.acelerazg;
 
 import com.acelerazg.todolist.TodoList;
-import com.acelerazg.todolist.exceptions.CancelOperationException;
 import com.acelerazg.todolist.common.Messages;
 import com.acelerazg.todolist.common.Response;
+import com.acelerazg.todolist.exceptions.CancelOperationException;
 import com.acelerazg.todolist.task.Reminder;
 import com.acelerazg.todolist.task.Status;
 import com.acelerazg.todolist.task.Task;
@@ -12,7 +12,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class Main {
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -94,14 +97,14 @@ public class Main {
         }
     }
 
-    private static void handleReminderManagement(TodoList todoList, Scanner scanner){
+    private static void handleReminderManagement(TodoList todoList, Scanner scanner) {
         System.out.print(Messages.PROMPT_REMINDER_ID);
         int taskId = readInt(scanner);
         printSingleTaskResponse(todoList.getTaskById(taskId));
-        while(true){
+        while (true) {
             System.out.println(Messages.PROMPT_REMINDER_OPTIONS);
             int option = readInt(scanner);
-            switch(option) {
+            switch (option) {
                 case 1:
                     String createMessage = readNonEmptyString(scanner, Messages.PROMPT_REMINDER_MESSAGE, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
                     int createHoursInAdvance = readReminderHoursInAdvance(scanner);
@@ -216,7 +219,7 @@ public class Main {
         }
     }
 
-    private static int readReminderHoursInAdvance(Scanner scanner){
+    private static int readReminderHoursInAdvance(Scanner scanner) {
         while (true) {
             System.out.print(Messages.PROMPT_REMINDER_ANTECEDENCY);
             String input = scanner.nextLine().trim();
@@ -235,7 +238,7 @@ public class Main {
         }
     }
 
-    private static Integer readOptionalReminderHoursInAdvance(Scanner scanner){
+    private static Integer readOptionalReminderHoursInAdvance(Scanner scanner) {
         while (true) {
             System.out.print(Messages.PROMPT_UPDATE_REMINDER_ANTECEDENCY);
             String input = scanner.nextLine().trim();

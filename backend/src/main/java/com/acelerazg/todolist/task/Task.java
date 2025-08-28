@@ -22,7 +22,7 @@ public class Task implements Comparable<Task> {
         this.description = description;
         this.endDate = endDate;
 
-        if(priority > 5){
+        if (priority > 5) {
             this.priority = 5;
         } else this.priority = Math.max(priority, 0);
 

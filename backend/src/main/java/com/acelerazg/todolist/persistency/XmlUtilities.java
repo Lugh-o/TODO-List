@@ -1,9 +1,11 @@
 package com.acelerazg.todolist.persistency;
 
-import java.io.File;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.acelerazg.todolist.task.Reminder;
+import com.acelerazg.todolist.task.Status;
+import com.acelerazg.todolist.task.Task;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,14 +14,10 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import com.acelerazg.todolist.task.Reminder;
-import com.acelerazg.todolist.task.Status;
-import com.acelerazg.todolist.task.Task;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class XmlUtilities {
 

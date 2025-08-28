@@ -2,7 +2,8 @@ package com.acelerazg.todolist.common;
 
 public final class Messages {
 
-    private Messages() {}
+    private Messages() {
+    }
 
     public static final String ERROR_EMPTY_CATEGORY = "Task category cannot be empty";
     public static final String ERROR_EMPTY_DESCRIPTION = "Task description cannot be empty";
@@ -42,21 +43,21 @@ public final class Messages {
     public static final String EXITING_APP = "Exiting application...";
     public static final String INVALID_OPTION = "Invalid option. Please choose between 1 and 8.";
     public static final String MENU_OPTIONS = "Choose the operation you wish to do:\n" +
-                                              "1 - List all tasks\n" +
-                                              "2 - Get a task by Id\n" +
-                                              "3 - Create a new task\n" +
-                                              "4 - Update a task by Id\n" +
-                                              "5 - Delete a task by Id\n" +
-                                              "6 - List tasks with a filter\n" +
-                                              "7 - Check task count by status\n" +
-                                              "8 - Manage reminders for a task\n" +
-                                              "q - Exit application and save\n" +
-                                              "You can cancel an operation by submitting 'q'";
+            "1 - List all tasks\n" +
+            "2 - Get a task by Id\n" +
+            "3 - Create a new task\n" +
+            "4 - Update a task by Id\n" +
+            "5 - Delete a task by Id\n" +
+            "6 - List tasks with a filter\n" +
+            "7 - Check task count by status\n" +
+            "8 - Manage reminders for a task\n" +
+            "q - Exit application and save\n" +
+            "You can cancel an operation by submitting 'q'";
     public static final String PROMPT_FILTER_RANGE = "Invalid field. Please choose 1, 2, 3 or 4.";
     public static final String PROMPT_REMINDER_OPTIONS = "Choose the operation you wish to do: \n" +
-                                                         "1 - Create a new Reminder \n" +
-                                                         "2 - Update a Reminder by Id \n" +
-                                                         "3 - Delete a Reminder by Id";
+            "1 - Create a new Reminder \n" +
+            "2 - Update a Reminder by Id \n" +
+            "3 - Delete a Reminder by Id";
 
     public static final String PROMPT_CATEGORY = "Category: ";
     public static final String PROMPT_DELETE_ID = "Enter task ID to delete: ";
@@ -65,10 +66,10 @@ public final class Messages {
     public static final String PROMPT_END_DATE = "End date (yyyy-MM-dd): ";
     public static final String PROMPT_END_DATE_TIME = "End date (yyyy-MM-dd HH:mm): ";
     public static final String PROMPT_FILTER_FIELD = "Enter field to filter: \n" +
-                                                      "1 - Priority\n" +
-                                                      "2 - Status\n" +
-                                                      "3 - Category\n" +
-                                                      "4 - End Date";
+            "1 - Priority\n" +
+            "2 - Status\n" +
+            "3 - Category\n" +
+            "4 - End Date";
     public static final String PROMPT_NAME = "Name: ";
     public static final String PROMPT_NEW_CATEGORY = "New category (leave blank to keep current): ";
     public static final String PROMPT_NEW_DESCRIPTION = "New description (leave blank to keep current): ";
@@ -87,7 +88,7 @@ public final class Messages {
     public static final String PROMPT_UPDATE_REMINDER_ID = "Enter reminder ID to update: ";
     public static final String PROMPT_UPDATE_REMINDER_MESSAGE = "Reminder Message (leave blank to keep current): ";
 
-    public static String StatusCountMessage(int todoCount, int doingCount, int doneCount){
+    public static String StatusCountMessage(int todoCount, int doingCount, int doneCount) {
         return "TODO: " + todoCount + "\n" +
                 "DOING: " + doingCount + "\n" +
                 "DONE: " + doneCount;

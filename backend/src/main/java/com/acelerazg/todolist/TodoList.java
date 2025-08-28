@@ -10,7 +10,10 @@ import com.acelerazg.todolist.task.Task;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -24,7 +27,8 @@ public class TodoList {
                                      int priority, String category, Status status) {
 
         Response<Void> validation = validateTaskData(name, description, category, status, priority, endDate, true);
-        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
+        if (validation.getStatusCode() != 200)
+            return Response.error(validation.getStatusCode(), validation.getMessage());
 
         Task task = new Task(nextTaskId++, name, description, endDate, priority, category, status);
         tasks.put(task.getId(), task);
@@ -65,7 +69,8 @@ public class TodoList {
         LocalDateTime finalEndDate = (endDate != null) ? endDate : task.getEndDate();
 
         Response<Void> validation = validateTaskData(finalName, finalDescription, finalCategory, finalStatus, finalPriority, finalEndDate, false);
-        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
+        if (validation.getStatusCode() != 200)
+            return Response.error(validation.getStatusCode(), validation.getMessage());
 
         task.setName(finalName);
         task.setDescription(finalDescription);
@@ -85,9 +90,10 @@ public class TodoList {
         return Response.success(204, Messages.SUCCESS_TASK_DELETED, null);
     }
 
-    public Response<Task> createReminder(int taskId, String message, int hoursInAdvance){
+    public Response<Task> createReminder(int taskId, String message, int hoursInAdvance) {
         Response<Void> validation = validateReminderData(message, hoursInAdvance);
-        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
+        if (validation.getStatusCode() != 200)
+            return Response.error(validation.getStatusCode(), validation.getMessage());
         if (taskId <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
 
         Task task = tasks.get(taskId);
@@ -112,7 +118,8 @@ public class TodoList {
         int finalHours = (hoursInAdvance != null) ? hoursInAdvance : reminder.getHoursInAdvance();
 
         Response<Void> validation = validateReminderData(finalMessage, finalHours);
-        if (validation.getStatusCode() != 200) return Response.error(validation.getStatusCode(), validation.getMessage());
+        if (validation.getStatusCode() != 200)
+            return Response.error(validation.getStatusCode(), validation.getMessage());
 
         reminder.setMessage(finalMessage);
         reminder.setHoursInAdvance(finalHours);
@@ -159,7 +166,7 @@ public class TodoList {
                 filterTasks(t -> t.getEndDate() != null && t.getEndDate().toLocalDate().isEqual(date)));
     }
 
-    public Response<Map<Status, Integer>> getStatusCount(){
+    public Response<Map<Status, Integer>> getStatusCount() {
         Map<Status, Integer> map = Arrays.stream(Status.values())
                 .collect(Collectors.toMap(s -> s, s -> getAllTasksByStatus(s).getData().size()));
         return Response.success(200, Messages.SUCCESS_TASK_COUNT, map);
@@ -199,11 +206,12 @@ public class TodoList {
         }
         if (isNullOrEmpty(name)) return Response.error(400, Messages.ERROR_EMPTY_NAME);
         if (priority < 1 || priority > 5) return Response.error(422, Messages.ERROR_PRIORITY_RANGE);
-        if (endDate != null && endDate.isBefore(LocalDateTime.now())) return Response.error(422, Messages.ERROR_END_DATE_PAST);
+        if (endDate != null && endDate.isBefore(LocalDateTime.now()))
+            return Response.error(422, Messages.ERROR_END_DATE_PAST);
         return Response.success(200, Messages.SUCCESS_VALIDATION_PASSED, null);
     }
 
-    private Response<Void> validateReminderData(String message, int hoursInAdvance){
+    private Response<Void> validateReminderData(String message, int hoursInAdvance) {
         if (isNullOrEmpty(message)) return Response.error(400, Messages.ERROR_REMINDER_EMPTY_MESSAGE);
         if (hoursInAdvance <= 0) return Response.error(422, Messages.ERROR_REMINDER_HOURS_RANGE);
         return Response.success(200, Messages.SUCCESS_VALIDATION_PASSED, null);

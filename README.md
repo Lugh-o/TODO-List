@@ -36,20 +36,21 @@ O usuário pode criar, listar, atualizar, excluir e filtrar tarefas, com salvame
 Para clonar o projeto:
 
     git clone https://github.com/Lugh-o/TODO-List.git
-    cd TODO-List
+    cd TODO-List/backend/
 
 Para compilar:
 
-    mkdir -p ./backend/out
-    javac -d ./backend/out $(find backend/src -name "*.java")
+    ./gradlew build
 
-Para executar:
+Para executar a aplicação:
 
-    mkdir -p backend/data
-    cd ./backend
+    mkdir -p ./data
     java -cp ./out com.acelerazg.Main
 
-E então programa exibirá o menu principal no console.
+Para executar os testes unitários:
+
+    ./gradlew test
+
 
 ## Estrutura do XML
 O arquivo `./backend/data/tasks.xml` é usado para persistência, ele armazena todas as tarefas e seus lembretes associados.  

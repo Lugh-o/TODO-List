@@ -22,9 +22,11 @@ public class Response<T> {
     public int getStatusCode() {
         return statusCode;
     }
+
     public String getMessage() {
         return message;
     }
+
     public T getData() {
         return data;
     }
