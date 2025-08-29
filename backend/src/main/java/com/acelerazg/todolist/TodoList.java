@@ -61,9 +61,10 @@ public class TodoList {
         Task task = tasks.get(id);
         if (task == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
 
-        String finalName = firstNonEmpty(name, task.getName());
-        String finalDescription = firstNonEmpty(description, task.getDescription());
-        String finalCategory = firstNonEmpty(category, task.getCategory());
+        String finalName = (name != null && !name.trim().isEmpty()) ? name : task.getName();
+        String finalDescription = (description != null && !description.trim().isEmpty()) ? description : task.getDescription();
+        String finalCategory = (category != null && !category.trim().isEmpty()) ? category : task.getCategory();
+
         Status finalStatus = (status != null) ? status : task.getStatus();
         int finalPriority = (priority != null) ? priority : task.getPriority();
         LocalDateTime finalEndDate = (endDate != null) ? endDate : task.getEndDate();
@@ -114,7 +115,8 @@ public class TodoList {
         Reminder reminder = task.getReminders().get(reminderId);
         if (reminder == null) return Response.error(404, Messages.ERROR_REMINDER_NOT_FOUND);
 
-        String finalMessage = firstNonEmpty(message, reminder.getMessage());
+        String finalMessage = (message != null && !message.trim().isEmpty()) ? message : reminder.getMessage();
+
         int finalHours = (hoursInAdvance != null) ? hoursInAdvance : reminder.getHoursInAdvance();
 
         Response<Void> validation = validateReminderData(finalMessage, finalHours);
@@ -135,10 +137,6 @@ public class TodoList {
         }
         task.getReminders().remove(reminderId);
         return Response.success(204, Messages.SUCCESS_TASK_DELETED, null);
-    }
-
-    private String firstNonEmpty(String value, String fallback) {
-        return (value != null && !value.trim().isEmpty()) ? value : fallback;
     }
 
     private boolean isNullOrEmpty(String value) {
