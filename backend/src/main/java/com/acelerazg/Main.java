@@ -17,9 +17,21 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * The main entry point for the To-Do List application.
+ * <p>
+ * This class handles the console-based user interface, input parsing, and interaction
+ * with the {@link TodoList} class. It allows users to perform CRUD operations on tasks,
+ * manage reminders, filter tasks, and persist data to XML files.
+ * </p>
+ */
 public class Main {
+    /** Date and time formatter for user input/output with both date and time. */
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    /** Date formatter for user input/output with only the date. */
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private static final String DATA_FILE = "./data/tasks.xml";
 
     public static void main(String[] args) {
@@ -80,20 +92,20 @@ public class Main {
                 HashMap<Integer, Reminder> triggeredReminders = task.getTriggeredReminders();
                 if (!triggeredReminders.isEmpty()) {
                     if (!found) {
-                        System.out.println("\n=== Triggered Reminders ===");
+                        System.out.println(Messages.TRIGGERED_REMINDERS_HEADER);
                         found = true;
                     }
-
-                    System.out.println("\nTask ID: " + task.getId() + " | End Date: " + task.getEndDate());
-                    System.out.println("Reminders:");
-
+                    System.out.println(Messages.formatTriggeredReminderTaskInfo(task.getId(), task.getEndDate().toString()));
+                    System.out.println(Messages.REMINDERS);
                     for (Reminder reminder : triggeredReminders.values()) {
-                        System.out.println("  - [Reminder ID " + reminder.getId() + "] " + reminder.getMessage()
-                                + " (" + reminder.getHoursInAdvance() + "h before)\n");
+                        System.out.println(Messages.formatTriggeredReminderInfo(
+                                reminder.getId(),
+                                reminder.getMessage(),
+                                reminder.getHoursInAdvance()
+                        ));
                     }
                 }
             }
-
         }
     }
 

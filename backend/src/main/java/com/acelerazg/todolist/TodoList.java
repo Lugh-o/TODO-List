@@ -17,6 +17,14 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a to-do list system that manages tasks and reminders.
+ * <p>
+ * This class allows creating, updating, deleting, and retrieving tasks,
+ * as well as managing reminders associated with each task.
+ * It also supports saving and loading data from XML.
+ * </p>
+ */
 public class TodoList {
 
     private Map<Integer, Task> tasks = new HashMap<>();

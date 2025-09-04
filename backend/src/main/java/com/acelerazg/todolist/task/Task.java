@@ -4,6 +4,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents a task in the TodoList application.
+ * <p>
+ * Each task has a unique ID, a name, description, end date, priority, category, creation and modification timestamps,
+ * status, and a collection of reminders. Tasks are comparable by their priority.
+ */
 public class Task implements Comparable<Task> {
     private final int id;
     private String name;

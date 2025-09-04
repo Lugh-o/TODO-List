@@ -1,5 +1,11 @@
 package com.acelerazg.todolist.task;
 
+/**
+ * Represents a reminder associated with a task in the TodoList application.
+ * <p>
+ * A reminder has a unique ID, a message to display, and a number of hours
+ * in advance of the task's end date when it should trigger.
+ */
 public class Reminder {
     private final int id;
     private String message;

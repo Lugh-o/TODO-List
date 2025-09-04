@@ -19,6 +19,11 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Utility class for XML persistence of tasks.
+ * <p>
+ * Contains methods to save and load tasks and their reminders to an XML file.
+ */
 public class XmlUtilities {
 
     public static void saveTasksToXml(Map<Integer, Task> tasks, int nextTaskId, int nextReminderId, String filePath) throws Exception {

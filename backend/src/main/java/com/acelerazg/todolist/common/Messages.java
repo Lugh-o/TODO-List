@@ -1,10 +1,13 @@
 package com.acelerazg.todolist.common;
 
+
+/**
+ * Static message class for the application.
+ * Contains error, success, prompt messages, and methods to format messages.
+ *
+ * All messages must be accessed statically.
+ */
 public final class Messages {
-
-    private Messages() {
-    }
-
     public static final String ERROR_EMPTY_CATEGORY = "Task category cannot be empty";
     public static final String ERROR_EMPTY_DESCRIPTION = "Task description cannot be empty";
     public static final String ERROR_EMPTY_INPUT = "Invalid input: Value cannot be empty";
@@ -88,9 +91,24 @@ public final class Messages {
     public static final String PROMPT_UPDATE_REMINDER_ID = "Enter reminder ID to update: ";
     public static final String PROMPT_UPDATE_REMINDER_MESSAGE = "Reminder Message (leave blank to keep current): ";
 
+    public static final String TRIGGERED_REMINDERS_HEADER = "\n=== Triggered Reminders ===";
+    public static final String TRIGGERED_REMINDER_TASK_INFO = "Task ID: %d | End Date: %s";
+    public static final String TRIGGERED_REMINDER_INFO = "  - [Reminder ID %d] %s (%dh before)\n";
+    public static final String REMINDERS = "Reminders:";
+
+    private Messages() {}
+
     public static String StatusCountMessage(int todoCount, int doingCount, int doneCount) {
         return "TODO: " + todoCount + "\n" +
                 "DOING: " + doingCount + "\n" +
                 "DONE: " + doneCount;
+    }
+
+    public static String formatTriggeredReminderTaskInfo(int taskId, String endDate) {
+        return String.format(TRIGGERED_REMINDER_TASK_INFO, taskId, endDate);
+    }
+
+    public static String formatTriggeredReminderInfo(int reminderId, String message, int hoursInAdvance) {
+        return String.format(TRIGGERED_REMINDER_INFO, reminderId, message, hoursInAdvance);
     }
 }
