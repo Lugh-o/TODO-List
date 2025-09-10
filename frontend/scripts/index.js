@@ -14,6 +14,68 @@ const colors = {
 	Priority1: "#c62828",
 };
 
+/* -------------------- Initial Loading -------------------- */
+window.addEventListener("DOMContentLoaded", async function () {
+	try {
+		const response = await fetch("../dbMock/tasksByPriority.json");
+		if (!response.ok)
+			throw new Error(`Failed to fetch tasks: ${response.status}`);
+		const tasks = await response.json();
+		TaskService.constructor(tasks);
+		loadTasksByPriority();
+	} catch (error) {
+		console.error("Error fetching JSON files:", error);
+	}
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+	const today = new Date().toISOString().split("T")[0];
+	document.getElementById("endDateForm").setAttribute("min", today);
+});
+
+/* -------------------- Data -------------------- */
+const TaskService = {
+	list: [],
+	currentId: 1,
+
+	constructor(tasks) {
+		this.list = tasks;
+		this.currentId = tasks.length + 1;
+	},
+
+	create(data) {
+		const task = {
+			id: this.currentId,
+			name: data.name,
+			description: data.description,
+			endDate: data.endDate,
+			priority: data.priority,
+			category: data.category,
+			status: data.status.toUpperCase(),
+		};
+		this.list.push(task);
+		this.currentId++;
+		console.log(this.list);
+
+		return task;
+	},
+
+	update(task, data) {
+		task.name = data.name;
+		task.description = data.description;
+		task.endDate = data.endDate;
+		task.priority = data.priority;
+		task.category = data.category;
+		task.status = data.status.toUpperCase();
+	},
+
+	delete(task) {
+		const index = this.list.indexOf(task);
+		if (index !== -1) this.list.splice(index, 1);
+	},
+};
+
+/* -------------------- UI -------------------- */
 let selectedFilter = null;
 const filterButtons = Array.from(document.querySelectorAll(".option button"));
 
@@ -50,47 +112,70 @@ const readModalPriority = readModal.querySelector(".cardPriority");
 const readModalEditButton = readModal.querySelector(".edit");
 const readModalDeleteButton = readModal.querySelector(".delete");
 
-let handleCreateListener,
-	handleEditListener,
-	readModalEditListener,
-	readModalDeleteListener;
+let readModalEditListener, readModalDeleteListener;
 
 const ucModal = document.querySelector(".ucModalContainer");
 const ucModalTitle = ucModal.querySelector("h2");
 const ucModalInputs = ucModal.querySelectorAll(".ucTextInput");
-const ucModalSubmit = document.querySelector(".submit");
+const ucModalForm = ucModal.querySelector("form");
 let ucModalIsEdit = false;
+let editingTask = null;
 
+/* -------------------- Create/Edit Modal -------------------- */
 function showCreateModal() {
-	removeUcModalListeners();
+	ucModalInputs.forEach((input) => (input.value = ""));
 	ucModalTitle.innerText = "Create Task";
 	ucModalIsEdit = false;
-
-	handleCreateListener = () => {
-		handleCreateTask();
-		closeCreateModal();
-		refreshTaskList();
-	};
-	ucModalSubmit.addEventListener("click", handleCreateListener);
+	editingTask = null;
 
 	tint.style.display = "block";
 	ucModal.style.display = "flex";
 }
 
-function handleCreateTask() {
-	console.log("Task Created");
+function showEditModal(task) {
+	ucModalInputs[0].value = task.name;
+	ucModalInputs[1].value = task.description;
+	ucModalInputs[2].value = task.endDate.substring(0, 10);
+	ucModalInputs[3].value = task.priority;
+	ucModalInputs[4].value = task.category;
+	ucModalInputs[5].value = task.status.toUpperCase();
+
+	ucModalTitle.innerText = "Edit Task";
+	ucModalIsEdit = true;
+	editingTask = task;
+
+	readModal.style.display = "none";
+	ucModal.style.display = "flex";
 }
 
-function closeCreateModal() {
+function closeUcModal() {
 	tint.style.display = "none";
 	ucModal.style.display = "none";
 }
 
-function removeUcModalListeners() {
-	ucModalSubmit.removeEventListener("click", handleEditListener);
-	ucModalSubmit.removeEventListener("click", handleCreateListener);
-}
+ucModalForm.addEventListener("submit", (event) => {
+	event.preventDefault();
 
+	const data = {
+		name: ucModalInputs[0].value,
+		description: ucModalInputs[1].value,
+		endDate: ucModalInputs[2].value,
+		priority: ucModalInputs[3].value,
+		category: ucModalInputs[4].value,
+		status: ucModalInputs[5].value,
+	};
+
+	if (ucModalIsEdit && editingTask) {
+		TaskService.update(editingTask, data);
+	} else {
+		TaskService.create(data);
+	}
+
+	closeUcModal();
+	refreshTaskList();
+});
+
+/* -------------------- Read Modal -------------------- */
 function showReadModal(task) {
 	readModalEditButton.removeEventListener("click", readModalEditListener);
 	readModalDeleteButton.removeEventListener("click", readModalDeleteListener);
@@ -118,13 +203,19 @@ function closeReadModal() {
 	readModal.style.display = "none";
 }
 
+/* -------------------- Delete Modal -------------------- */
 const deleteModal = document.querySelector(".deleteModalContainer");
 const deleteModalDeleteButton = deleteModal.querySelector(".delete");
 let handleDeleteListener;
 
 function showDeleteModal(task) {
 	deleteModalDeleteButton.removeEventListener("click", handleDeleteListener);
-	handleDeleteListener = () => handleDeleteTask(task);
+	handleDeleteListener = () => {
+		TaskService.delete(task);
+		closeDeleteModal();
+		closeReadModal();
+		refreshTaskList();
+	};
 	deleteModalDeleteButton.addEventListener("click", handleDeleteListener);
 
 	tint.style.zIndex = "1050";
@@ -136,44 +227,9 @@ function closeDeleteModal() {
 	deleteModal.style.display = "none";
 }
 
-function handleDeleteTask(task) {
-	console.log(`Task ${task.id} deleted`);
-	closeDeleteModal();
-	closeReadModal();
-	refreshTaskList();
-}
-
-function showEditModal(task) {
-	removeUcModalListeners();
-
-	ucModalInputs[0].value = task.name;
-	ucModalInputs[1].value = task.description;
-	ucModalInputs[2].value = task.endDate.substring(0, 10);
-	ucModalInputs[3].value = task.priority;
-	ucModalInputs[4].value = task.category;
-	ucModalInputs[5].value = task.status.toLowerCase();
-	ucModalTitle.innerText = "Edit Task";
-	ucModalIsEdit = true;
-
-	handleEditListener = (event) => {
-		event.preventDefault();
-		handleEditTask(task);
-		closeCreateModal();
-		refreshTaskList();
-	};
-
-	ucModalSubmit.addEventListener("click", handleEditListener);
-
-	readModal.style.display = "none";
-	ucModal.style.display = "flex";
-}
-
-function handleEditTask(task) {
-	console.log(`Task ${task.id} Editted`);
-}
-
+/* -------------------- Helpers -------------------- */
 function getPriorityColor(priority) {
-	return colors[`Priority${priority}`] || colors.Priority1;
+	return colors[`Priority${parseInt(priority)}`] || colors.Priority1;
 }
 
 function refreshTaskList() {
@@ -184,20 +240,7 @@ function refreshTaskList() {
 	}
 }
 
-let tasksByPriority = [];
-
-window.addEventListener("DOMContentLoaded", async function () {
-	try {
-		const response = await fetch("../dbMock/tasksByPriority.json");
-		if (!response.ok)
-			throw new Error(`Failed to fetch tasks: ${response.status}`);
-		tasksByPriority = await response.json();
-		loadTasksByPriority();
-	} catch (error) {
-		console.error("Error fetching JSON files:", error);
-	}
-});
-
+/* -------------------- Rendering -------------------- */
 const listContainer = document.querySelector(".listContainer");
 
 function taskCard(task) {
@@ -219,15 +262,20 @@ function taskCard(task) {
 }
 
 function loadTasksByPriority() {
+	TaskService.list.sort((a, b) => {
+		const diff = parseInt(a.priority) - parseInt(b.priority);
+		if (diff !== 0) return diff;
+		return new Date(a.endDate) - new Date(b.endDate);
+	});
 	listContainer.innerHTML = "";
-	tasksByPriority.forEach((task) => {
+	TaskService.list.forEach((task) => {
 		listContainer.appendChild(taskCard(task));
 	});
 }
 
 function loadTasksByStatus(status) {
-	const filteredTasks = tasksByPriority.filter(
-		(task) => task.status == status
+	const filteredTasks = TaskService.list.filter(
+		(task) => task.status === status
 	);
 	listContainer.innerHTML = "";
 	filteredTasks.forEach((task) => {

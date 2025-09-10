@@ -91,6 +91,8 @@
 							placeholder="Name"
 							id="nameForm"
 							required
+							maxlength="50"
+							min=""
 						/>
 					</fieldset>
 					<fieldset>
@@ -101,6 +103,7 @@
 							id="descriptionForm"
 							placeholder="Short description"
 							required
+							maxlength="200"
 						></textarea>
 					</fieldset>
 					<fieldset>
@@ -119,6 +122,7 @@
 							class="ucTextInput"
 							name="priorityForm"
 							id="priorityForm"
+							required
 						>
 							<option value="1">Priority 1 (Highest)</option>
 							<option value="2">Priority 2</option>
@@ -136,6 +140,7 @@
 							placeholder="Category"
 							id="categoryForm"
 							required
+							maxlength="30"
 						/>
 					</fieldset>
 					<fieldset>
@@ -144,17 +149,19 @@
 							class="ucTextInput"
 							name="statusForm"
 							id="statusForm"
+							required
 						>
-							<option value="todo">TODO</option>
-							<option value="doing">DOING</option>
-							<option value="done">DONE</option>
+							<option value="TODO">TODO</option>
+							<option value="DOING">DOING</option>
+							<option value="DONE">DONE</option>
 						</select>
 					</fieldset>
 					<div class="controls">
 						<button type="submit" class="submit">Submit</button>
 						<button
+							type="button"
 							class="cancel"
-							onclick="closeCreateModal()"
+							onclick="closeUcModal()"
 							formnovalidate
 						>
 							Cancel

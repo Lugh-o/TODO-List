@@ -6,226 +6,7 @@
     "endDate": "2026-09-01T20:20",
     "priority": 1,
     "category": "Work",
-    "creationDate": "2025-09-07T10:10:23.150",
-    "modificationDate": "2025-09-07T10:10:23.150",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 4,
-    "name": "Task 4",
-    "description": "Generic description",
-    "endDate": "2025-10-02T12:00",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:12",
-    "modificationDate": "2025-09-07T10:12",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 7,
-    "name": "Task 7",
-    "description": "Generic description",
-    "endDate": "2025-10-05T16:00",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:12:30",
-    "modificationDate": "2025-09-07T10:12:30",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 10,
-    "name": "Task 10",
-    "description": "Generic description",
-    "endDate": "2025-10-08T13:00",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:13",
-    "modificationDate": "2025-09-07T10:13",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 13,
-    "name": "Task 13",
-    "description": "Generic description",
-    "endDate": "2025-10-11T17:00",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:13:30",
-    "modificationDate": "2025-09-07T10:13:30",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 16,
-    "name": "Task 16",
-    "description": "Generic description",
-    "endDate": "2025-10-14T14:00",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:14",
-    "modificationDate": "2025-09-07T10:14",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 19,
-    "name": "Task 19",
-    "description": "Generic description",
-    "endDate": "2025-10-17T13:15",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:14:30",
-    "modificationDate": "2025-09-07T10:14:30",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 22,
-    "name": "Task 22",
-    "description": "Generic description",
-    "endDate": "2025-10-20T18:10",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:15",
-    "modificationDate": "2025-09-07T10:15",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 25,
-    "name": "Task 25",
-    "description": "Generic description",
-    "endDate": "2025-10-23T19:30",
-    "priority": 1,
-    "category": "Work",
-    "creationDate": "2025-09-07T10:15:30",
-    "modificationDate": "2025-09-07T10:15:30",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 3,
-    "name": "Task 3",
-    "description": "Lorem",
-    "endDate": "2025-10-01T13:00",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:11:46.049",
-    "modificationDate": "2025-09-07T10:11:46.049",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 5,
-    "name": "Task 5",
-    "description": "Generic description",
-    "endDate": "2025-10-03T14:30",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:12:10",
-    "modificationDate": "2025-09-07T10:12:10",
-    "status": "DOING",
-    "reminders": []
-  },
-  {
-    "id": 8,
-    "name": "Task 8",
-    "description": "Generic description",
-    "endDate": "2025-10-06T18:00",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:12:40",
-    "modificationDate": "2025-09-07T10:12:40",
-    "status": "DONE",
-    "reminders": []
-  },
-  {
-    "id": 11,
-    "name": "Task 11",
-    "description": "Generic description",
-    "endDate": "2025-10-09T09:30",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:13:10",
-    "modificationDate": "2025-09-07T10:13:10",
-    "status": "DONE",
-    "reminders": []
-  },
-  {
-    "id": 14,
-    "name": "Task 14",
-    "description": "Generic description",
-    "endDate": "2025-10-12T19:00",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:13:40",
-    "modificationDate": "2025-09-07T10:13:40",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 17,
-    "name": "Task 17",
-    "description": "Generic description",
-    "endDate": "2025-10-15T10:30",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:14:10",
-    "modificationDate": "2025-09-07T10:14:10",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 20,
-    "name": "Task 20",
-    "description": "Generic description",
-    "endDate": "2025-10-18T09:00",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:14:40",
-    "modificationDate": "2025-09-07T10:14:40",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 23,
-    "name": "Task 23",
-    "description": "Generic description",
-    "endDate": "2025-10-21T07:45",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:15:10",
-    "modificationDate": "2025-09-07T10:15:10",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 29,
-    "name": "Task 29",
-    "description": "Generic description",
-    "endDate": "2025-10-27T10:10",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:16:10",
-    "modificationDate": "2025-09-07T10:16:10",
-    "status": "DONE",
-    "reminders": []
-  },
-  {
-    "id": 32,
-    "name": "Task 32",
-    "description": "Generic description",
-    "endDate": "2025-10-30T12:45",
-    "priority": 2,
-    "category": "College",
-    "creationDate": "2025-09-07T10:16:40",
-    "modificationDate": "2025-09-07T10:16:40",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
   },
   {
     "id": 2,
@@ -234,10 +15,34 @@
     "endDate": "2027-01-01T15:00",
     "priority": 3,
     "category": "Work",
-    "creationDate": "2025-09-07T10:10:54.100",
-    "modificationDate": "2025-09-07T10:10:54.100",
-    "status": "DOING",
-    "reminders": []
+    "status": "DOING"
+  },
+  {
+    "id": 3,
+    "name": "Task 3",
+    "description": "Lorem",
+    "endDate": "2025-10-01T13:00",
+    "priority": 2,
+    "category": "College",
+    "status": "TODO"
+  },
+  {
+    "id": 4,
+    "name": "Task 4",
+    "description": "Generic description",
+    "endDate": "2025-10-02T12:00",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
+  },
+  {
+    "id": 5,
+    "name": "Task 5",
+    "description": "Generic description",
+    "endDate": "2025-10-03T14:30",
+    "priority": 2,
+    "category": "College",
+    "status": "DOING"
   },
   {
     "id": 6,
@@ -246,10 +51,25 @@
     "endDate": "2025-10-04T09:00",
     "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:12:20",
-    "modificationDate": "2025-09-07T10:12:20",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 7,
+    "name": "Task 7",
+    "description": "Generic description",
+    "endDate": "2025-10-05T16:00",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
+  },
+  {
+    "id": 8,
+    "name": "Task 8",
+    "description": "Generic description",
+    "endDate": "2025-10-06T18:00",
+    "priority": 2,
+    "category": "College",
+    "status": "DONE"
   },
   {
     "id": 9,
@@ -258,10 +78,25 @@
     "endDate": "2025-10-07T11:00",
     "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:12:50",
-    "modificationDate": "2025-09-07T10:12:50",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 10,
+    "name": "Task 10",
+    "description": "Generic description",
+    "endDate": "2025-10-08T13:00",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
+  },
+  {
+    "id": 11,
+    "name": "Task 11",
+    "description": "Generic description",
+    "endDate": "2025-10-09T09:30",
+    "priority": 2,
+    "category": "College",
+    "status": "DONE"
   },
   {
     "id": 12,
@@ -270,10 +105,25 @@
     "endDate": "2025-10-10T15:00",
     "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:13:20",
-    "modificationDate": "2025-09-07T10:13:20",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 13,
+    "name": "Task 13",
+    "description": "Generic description",
+    "endDate": "2025-10-11T17:00",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
+  },
+  {
+    "id": 14,
+    "name": "Task 14",
+    "description": "Generic description",
+    "endDate": "2025-10-12T19:00",
+    "priority": 2,
+    "category": "College",
+    "status": "TODO"
   },
   {
     "id": 15,
@@ -282,10 +132,25 @@
     "endDate": "2025-10-13T08:00",
     "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:13:50",
-    "modificationDate": "2025-09-07T10:13:50",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 16,
+    "name": "Task 16",
+    "description": "Generic description",
+    "endDate": "2025-10-14T14:00",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
+  },
+  {
+    "id": 17,
+    "name": "Task 17",
+    "description": "Generic description",
+    "endDate": "2025-10-15T10:30",
+    "priority": 2,
+    "category": "College",
+    "status": "TODO"
   },
   {
     "id": 18,
@@ -294,10 +159,25 @@
     "endDate": "2025-10-16T11:45",
     "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:14:20",
-    "modificationDate": "2025-09-07T10:14:20",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 19,
+    "name": "Task 19",
+    "description": "Generic description",
+    "endDate": "2025-10-17T13:15",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
+  },
+  {
+    "id": 20,
+    "name": "Task 20",
+    "description": "Generic description",
+    "endDate": "2025-10-18T09:00",
+    "priority": 2,
+    "category": "College",
+    "status": "TODO"
   },
   {
     "id": 21,
@@ -306,10 +186,25 @@
     "endDate": "2025-10-19T16:20",
     "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:14:50",
-    "modificationDate": "2025-09-07T10:14:50",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 22,
+    "name": "Task 22",
+    "description": "Generic description",
+    "endDate": "2025-10-20T18:10",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
+  },
+  {
+    "id": 23,
+    "name": "Task 23",
+    "description": "Generic description",
+    "endDate": "2025-10-21T07:45",
+    "priority": 2,
+    "category": "College",
+    "status": "TODO"
   },
   {
     "id": 24,
@@ -318,34 +213,16 @@
     "endDate": "2025-10-22T12:00",
     "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:15:20",
-    "modificationDate": "2025-09-07T10:15:20",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
   },
   {
-    "id": 27,
-    "name": "Task 27",
+    "id": 25,
+    "name": "Task 25",
     "description": "Generic description",
-    "endDate": "2025-10-25T11:50",
-    "priority": 3,
-    "category": "Personal",
-    "creationDate": "2025-09-07T10:15:50",
-    "modificationDate": "2025-09-07T10:15:50",
-    "status": "TODO",
-    "reminders": []
-  },
-  {
-    "id": 30,
-    "name": "Task 30",
-    "description": "Generic description",
-    "endDate": "2025-10-28T09:00",
-    "priority": 3,
-    "category": "Personal",
-    "creationDate": "2025-09-07T10:16:20",
-    "modificationDate": "2025-09-07T10:16:20",
-    "status": "TODO",
-    "reminders": []
+    "endDate": "2025-10-23T19:30",
+    "priority": 1,
+    "category": "Work",
+    "status": "TODO"
   },
   {
     "id": 26,
@@ -354,22 +231,17 @@
     "endDate": "2025-10-24T08:15",
     "priority": 4,
     "category": "College",
-    "creationDate": "2025-09-07T10:15:40",
-    "modificationDate": "2025-09-07T10:15:40",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
   },
   {
-    "id": 33,
-    "name": "Task 33",
+    "id": 27,
+    "name": "Task 27",
     "description": "Generic description",
-    "endDate": "2025-11-01T10:00",
-    "priority": 4,
+    "endDate": "2025-10-25T11:50",
+    "priority": 3,
     "category": "Personal",
-    "creationDate": "2025-09-07T10:16:50",
-    "modificationDate": "2025-09-07T10:16:50",
-    "status": "DOING",
-    "reminders": []
+    "": "2025-09-07T10:15:50",
+    "status": "TODO"
   },
   {
     "id": 28,
@@ -378,10 +250,25 @@
     "endDate": "2025-10-26T14:00",
     "priority": 5,
     "category": "Work",
-    "creationDate": "2025-09-07T10:16",
-    "modificationDate": "2025-09-07T10:16",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 29,
+    "name": "Task 29",
+    "description": "Generic description",
+    "endDate": "2025-10-27T10:10",
+    "priority": 2,
+    "category": "College",
+    "status": "DONE"
+  },
+  {
+    "id": 30,
+    "name": "Task 30",
+    "description": "Generic description",
+    "endDate": "2025-10-28T09:00",
+    "priority": 3,
+    "category": "Personal",
+    "status": "TODO"
   },
   {
     "id": 31,
@@ -390,9 +277,24 @@
     "endDate": "2025-10-29T16:30",
     "priority": 5,
     "category": "Work",
-    "creationDate": "2025-09-07T10:16:30",
-    "modificationDate": "2025-09-07T10:16:30",
-    "status": "TODO",
-    "reminders": []
+    "status": "TODO"
+  },
+  {
+    "id": 32,
+    "name": "Task 32",
+    "description": "Generic description",
+    "endDate": "2025-10-30T12:45",
+    "priority": 2,
+    "category": "College",
+    "status": "TODO"
+  },
+  {
+    "id": 33,
+    "name": "Task 33",
+    "description": "Generic description",
+    "endDate": "2025-11-01T10:00",
+    "priority": 4,
+    "category": "Personal",
+    "status": "DOING"
   }
 ]
