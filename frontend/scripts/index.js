@@ -55,7 +55,6 @@ const TaskService = {
 		};
 		this.list.push(task);
 		this.currentId++;
-		console.log(this.list);
 
 		return task;
 	},
@@ -118,14 +117,12 @@ const ucModal = document.querySelector(".ucModalContainer");
 const ucModalTitle = ucModal.querySelector("h2");
 const ucModalInputs = ucModal.querySelectorAll(".ucTextInput");
 const ucModalForm = ucModal.querySelector("form");
-let ucModalIsEdit = false;
 let editingTask = null;
 
 /* -------------------- Create/Edit Modal -------------------- */
 function showCreateModal() {
 	ucModalInputs.forEach((input) => (input.value = ""));
 	ucModalTitle.innerText = "Create Task";
-	ucModalIsEdit = false;
 	editingTask = null;
 
 	tint.style.display = "block";
@@ -141,7 +138,6 @@ function showEditModal(task) {
 	ucModalInputs[5].value = task.status.toUpperCase();
 
 	ucModalTitle.innerText = "Edit Task";
-	ucModalIsEdit = true;
 	editingTask = task;
 
 	readModal.style.display = "none";
@@ -165,7 +161,7 @@ ucModalForm.addEventListener("submit", (event) => {
 		status: ucModalInputs[5].value,
 	};
 
-	if (ucModalIsEdit && editingTask) {
+	if (editingTask) {
 		TaskService.update(editingTask, data);
 	} else {
 		TaskService.create(data);
@@ -229,7 +225,7 @@ function closeDeleteModal() {
 
 /* -------------------- Helpers -------------------- */
 function getPriorityColor(priority) {
-	return colors[`Priority${parseInt(priority)}`] || colors.Priority1;
+	return colors[`Priority${parseInt(priority)}`];
 }
 
 function refreshTaskList() {
