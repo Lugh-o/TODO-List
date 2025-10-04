@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'org.example'
+group = 'com.acelerazg'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -17,4 +17,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.register('run', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.acelerazg.Main'
+    standardInput = System.in
 }

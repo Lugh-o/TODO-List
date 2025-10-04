@@ -45,7 +45,7 @@ Para compilar:
 Para executar a aplicação:
 
     mkdir -p ./data
-    java -cp ./out com.acelerazg.Main
+    ./gradlew run
 
 Para executar os testes unitários:
 
