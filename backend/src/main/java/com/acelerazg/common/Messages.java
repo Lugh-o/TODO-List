@@ -1,12 +1,5 @@
-package com.acelerazg.todolist.common;
+package com.acelerazg.common;
 
-
-/**
- * Static message class for the application.
- * Contains error, success, prompt messages, and methods to format messages.
- *
- * All messages must be accessed statically.
- */
 public final class Messages {
     public static final String ERROR_EMPTY_CATEGORY = "Task category cannot be empty";
     public static final String ERROR_EMPTY_DESCRIPTION = "Task description cannot be empty";

@@ -1,8 +1,8 @@
-package com.acelerazg.todolist.persistency;
+package com.acelerazg.persistency;
 
-import com.acelerazg.todolist.task.Reminder;
-import com.acelerazg.todolist.task.Status;
-import com.acelerazg.todolist.task.Task;
+import com.acelerazg.model.Reminder;
+import com.acelerazg.model.Status;
+import com.acelerazg.model.Task;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -19,11 +19,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Utility class for XML persistence of tasks.
- * <p>
- * Contains methods to save and load tasks and their reminders to an XML file.
- */
 public class XmlUtilities {
 
     public static void saveTasksToXml(Map<Integer, Task> tasks, int nextTaskId, int nextReminderId, String filePath) throws Exception {

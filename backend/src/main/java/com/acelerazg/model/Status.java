@@ -1,4 +1,4 @@
-package com.acelerazg.todolist.task;
+package com.acelerazg.model;
 
 public enum Status {
     TODO, DOING, DONE

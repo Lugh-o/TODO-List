@@ -1,15 +1,9 @@
-package com.acelerazg.todolist.task;
+package com.acelerazg.model;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Represents a task in the TodoList application.
- * <p>
- * Each task has a unique ID, a name, description, end date, priority, category, creation and modification timestamps,
- * status, and a collection of reminders. Tasks are comparable by their priority.
- */
 public class Task implements Comparable<Task> {
     private final int id;
     private String name;
@@ -127,23 +121,8 @@ public class Task implements Comparable<Task> {
         return reminders;
     }
 
-    public void setReminders(Map<Integer, Reminder> reminders) {
-        this.reminders = reminders;
-    }
-
     @Override
     public String toString() {
-        return "{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", endDate=" + endDate +
-                ", priority=" + priority +
-                ", category='" + category + '\'' +
-                ", creationDate=" + creationDate +
-                ", modificationDate=" + modificationDate +
-                ", status=" + status +
-                ", reminders=" + reminders.values() +
-                '}';
+        return "{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' + ", endDate=" + endDate + ", priority=" + priority + ", category='" + category + '\'' + ", creationDate=" + creationDate + ", modificationDate=" + modificationDate + ", status=" + status + ", reminders=" + reminders.values() + '}';
     }
 }

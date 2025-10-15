@@ -1,14 +1,9 @@
-package com.acelerazg.todolist.persistency;
+package com.acelerazg.persistency;
 
-import com.acelerazg.todolist.task.Task;
+import com.acelerazg.model.Task;
 
 import java.util.Map;
 
-/**
- * Class representing the data structure used for XML persistence.
- * <p>
- * Stores the collection of tasks and the next available IDs for tasks and reminders.
- */
 public class XmlData {
     private final Map<Integer, Task> tasks;
     private final int nextTaskId;

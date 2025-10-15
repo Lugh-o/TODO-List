@@ -1,9 +1,10 @@
-package com.acelerazg.todolist;
+package com.acelerazg.controller;
 
-import com.acelerazg.todolist.common.Messages;
-import com.acelerazg.todolist.common.Response;
-import com.acelerazg.todolist.task.Status;
-import com.acelerazg.todolist.task.Task;
+import com.acelerazg.App;
+import com.acelerazg.common.Messages;
+import com.acelerazg.common.Response;
+import com.acelerazg.model.Status;
+import com.acelerazg.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,13 +13,14 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TodoListTest {
+class TaskControllerTest {
 
-    private TodoList todoList;
+    private TaskController taskController;
 
     @BeforeEach
     void setUp() {
-        todoList = new TodoList();
+        App app = new App();
+        this.taskController = new TaskController(app);
     }
 
     @Test
@@ -27,7 +29,7 @@ class TodoListTest {
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
 
         // WHEN
-        Response<Task> response = todoList.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        Response<Task> response = taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         // THEN
         assertEquals(201, response.getStatusCode());
@@ -38,7 +40,7 @@ class TodoListTest {
         assertEquals("Task 1", task.getName());
         assertEquals(1, task.getId());
 
-        assertEquals(task, todoList.getTaskById(task.getId()).getData());
+        assertEquals(task, taskController.getTaskById(task.getId()).getData());
     }
 
     @Test
@@ -47,7 +49,7 @@ class TodoListTest {
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
 
         // WHEN
-        Response<Task> response = todoList.createTask("", "Description", endDate, 3, "Work", Status.TODO);
+        Response<Task> response = taskController.createTask("", "Description", endDate, 3, "Work", Status.TODO);
 
         // THEN
         assertEquals(400, response.getStatusCode());
@@ -60,7 +62,7 @@ class TodoListTest {
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
 
         // WHEN
-        Response<Task> response = todoList.createTask("Task", "Description", endDate, 20, "Work", Status.TODO);
+        Response<Task> response = taskController.createTask("Task", "Description", endDate, 20, "Work", Status.TODO);
 
         // THEN
         assertEquals(422, response.getStatusCode());
@@ -73,7 +75,7 @@ class TodoListTest {
         LocalDateTime pastDate = LocalDateTime.now().minusDays(1);
 
         // WHEN
-        Response<Task> response = todoList.createTask("Task", "Description", pastDate, 3, "Work", Status.TODO);
+        Response<Task> response = taskController.createTask("Task", "Description", pastDate, 3, "Work", Status.TODO);
 
         // THEN
         assertEquals(422, response.getStatusCode());
@@ -84,10 +86,10 @@ class TodoListTest {
     void getTaskByIdSuccessful() {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        todoList.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         // WHEN
-        Response<Task> response = todoList.getTaskById(1);
+        Response<Task> response = taskController.getTaskById(1);
 
         // THEN
         assertEquals(200, response.getStatusCode());
@@ -97,10 +99,10 @@ class TodoListTest {
     void getTaskByIdInvalid() {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        todoList.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         // WHEN
-        Response<Task> response = todoList.getTaskById(-1);
+        Response<Task> response = taskController.getTaskById(-1);
 
         // THEN
         assertEquals(400, response.getStatusCode());
@@ -109,7 +111,7 @@ class TodoListTest {
     @Test
     void getTaskByIdNoTask() {
         // WHEN
-        Response<Task> response = todoList.getTaskById(1);
+        Response<Task> response = taskController.getTaskById(1);
 
         // THEN
         assertEquals(404, response.getStatusCode());
@@ -118,7 +120,7 @@ class TodoListTest {
     @Test
     void getAllTasks() {
         // WHEN
-        Response<Map<Integer, Task>> response = todoList.getAllTasks();
+        Response<Map<Integer, Task>> response = taskController.getAllTasks();
 
         // THEN
         assertEquals(200, response.getStatusCode());
@@ -128,22 +130,14 @@ class TodoListTest {
     void updateTaskSuccessful() {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        todoList.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
-        Task originalTask = todoList.getTaskById(1).getData();
+        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        Task originalTask = taskController.getTaskById(1).getData();
 
-        originalTask = new Task(
-                originalTask.getId(),
-                originalTask.getName(),
-                originalTask.getDescription(),
-                originalTask.getEndDate(),
-                originalTask.getPriority(),
-                originalTask.getCategory(),
-                originalTask.getStatus()
-        );
+        originalTask = new Task(originalTask.getId(), originalTask.getName(), originalTask.getDescription(), originalTask.getEndDate(), originalTask.getPriority(), originalTask.getCategory(), originalTask.getStatus());
 
 
         // WHEN
-        Response<Task> response = todoList.updateTask(1, "Task Updated", null, null, null, null, Status.DONE);
+        Response<Task> response = taskController.updateTask(1, "Task Updated", null, null, null, null, Status.DONE);
         Task newTask = response.getData();
 
         // THEN
@@ -155,7 +149,7 @@ class TodoListTest {
     @Test
     void updateTaskInvalidId() {
         // WHEN
-        Response<Task> response = todoList.updateTask(-13, "Task Updated", null, null, null, null, Status.DONE);
+        Response<Task> response = taskController.updateTask(-13, "Task Updated", null, null, null, null, Status.DONE);
 
         // THEN
         assertEquals(400, response.getStatusCode());
@@ -165,7 +159,7 @@ class TodoListTest {
     @Test
     void updateTaskNoTask() {
         // WHEN
-        Response<Task> response = todoList.updateTask(2, "Task Updated", null, null, null, null, Status.DONE);
+        Response<Task> response = taskController.updateTask(2, "Task Updated", null, null, null, null, Status.DONE);
 
         // THEN
         assertEquals(404, response.getStatusCode());
@@ -176,15 +170,14 @@ class TodoListTest {
     void updateTaskPriorityOutOfRange() {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        todoList.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         // WHEN
-        Response<Task> response = todoList.updateTask(1, "Task Updated", null, null, 30, null, Status.DONE);
+        Response<Task> response = taskController.updateTask(1, "Task Updated", null, null, 30, null, Status.DONE);
 
         // THEN
         assertEquals(422, response.getStatusCode());
         assertNull(response.getData());
-
     }
 
     @Test
@@ -192,10 +185,10 @@ class TodoListTest {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
         LocalDateTime pastDate = LocalDateTime.now().minusDays(1);
-        todoList.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         // WHEN
-        Response<Task> response = todoList.updateTask(1, "Task Updated", null, pastDate, 3, null, Status.DONE);
+        Response<Task> response = taskController.updateTask(1, "Task Updated", null, pastDate, 3, null, Status.DONE);
 
         // THEN
         assertEquals(422, response.getStatusCode());
@@ -206,21 +199,21 @@ class TodoListTest {
     void deleteTaskSuccessful() {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        todoList.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         // WHEN
-        Response<Void> response = todoList.deleteTask(1);
+        Response<Void> response = taskController.deleteTask(1);
 
         // THEN
         assertEquals(204, response.getStatusCode());
-        assertEquals(0, todoList.getAllTasks().getData().size());
+        assertEquals(0, taskController.getAllTasks().getData().size());
         assertNull(response.getData());
     }
 
     @Test
     void deleteTaskInvalidId() {
         // WHEN
-        Response<Void> response = todoList.deleteTask(-3);
+        Response<Void> response = taskController.deleteTask(-3);
 
         // THEN
         assertEquals(400, response.getStatusCode());
@@ -230,11 +223,10 @@ class TodoListTest {
     @Test
     void deleteTaskNoTask() {
         // WHEN
-        Response<Void> response = todoList.deleteTask(1);
+        Response<Void> response = taskController.deleteTask(1);
 
         // THEN
         assertEquals(404, response.getStatusCode());
         assertNull(response.getData());
     }
-
 }

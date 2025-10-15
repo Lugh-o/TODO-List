@@ -1,13 +1,5 @@
-package com.acelerazg.todolist.common;
+package com.acelerazg.common;
 
-/**
- * Generic class that encapsulates the response of an operation in the TodoList application.
- * <p>
- * Provides information about the operation status, a descriptive message,
- * and optionally, data returned by the operation.
- *
- * @param <T> Type of the data returned in the response, if any.
- */
 public class Response<T> {
     private final int statusCode;
     private final String message;
@@ -41,10 +33,6 @@ public class Response<T> {
 
     @Override
     public String toString() {
-        return "{" +
-                "statusCode=" + statusCode +
-                ", message='" + message + '\'' +
-                ", data=" + data +
-                '}';
+        return "{" + "statusCode=" + statusCode + ", message='" + message + '\'' + ", data=" + data + '}';
     }
 }
