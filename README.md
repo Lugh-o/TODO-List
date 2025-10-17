@@ -1,9 +1,33 @@
 # TODO List
 
 Uma aplicação de lista de tarefas em Java feita para rodar no console.  
-O usuário pode criar, listar, atualizar, excluir e filtrar tarefas, com salvamento e carregamento de dos dados em um .xml. Por enquanto somente o backend está feito, com uma interface por linha de comando.
+O usuário pode criar, listar, atualizar, excluir e filtrar tarefas, com salvamento e carregamento de dos dados em um .xml. Atualmente possui um backend e um frontend isolados, cada um com funcionalidades parciais.
 
-## Funcionalidades
+## Frontend
+
+### Funcionalidades
+- Criar tarefas com:
+  - Nome
+  - Descrição
+  - Data de término
+  - Prioridade (1 a 5)
+  - Categoria
+  - Status (TODO, DOING, DONE)
+- Listar todas as tarefas (ordenadas por prioridade).
+- Ler uma tarefa
+- Atualizar uma tarefa
+- Excluir tarefas
+- Filtrar tarefas por status
+
+### Requisitos
+- Ter um navegador compatível com ES Modules
+
+### Como executar
+Basta abrir o arquivo "./frontend/index.html" no navegador
+
+## Backend
+
+### Funcionalidades
 
 - Criar tarefas com:
   - Nome
@@ -27,10 +51,10 @@ O usuário pode criar, listar, atualizar, excluir e filtrar tarefas, com salvame
   - Salvamento automático ao sair.
 - Possibilidade de adicionar alarmes às atividades.
 
-## Requisitos
+### Requisitos
 - Java 8+
 
-## Como executar
+### Como executar
 
 
 Para clonar o projeto:
@@ -52,11 +76,11 @@ Para executar os testes unitários:
     ./gradlew test
 
 
-## Estrutura do XML
+### Estrutura do XML
 O arquivo `./backend/data/tasks.xml` é usado para persistência, ele armazena todas as tarefas e seus lembretes associados.  
 Ele contém:
 
-### Estrutura Geral
+#### Estrutura Geral
 ```xml
 <tasks nextReminderId="N" nextTaskId="M">
     <task id="...">
@@ -68,7 +92,7 @@ Ele contém:
 </tasks>
 ```
 
-### Estrutura de Task
+#### Estrutura de Task
 ```xml
 <task id="1">
     <name>...</name>
@@ -85,7 +109,7 @@ Ele contém:
 </task>
 ```
 
-### Estrutura de Reminder
+#### Estrutura de Reminder
 ```xml
 <reminders>
     <reminder id="1">
@@ -95,7 +119,7 @@ Ele contém:
 </reminders>
 ```
 
-## Observações
+### Observações
 -   Durante qualquer operação, é possível digitar **`q`** para cancelar e voltar ao menu principal.
 -   IDs inválidos, campos obrigatórios em branco ou formatos de data incorretos são tratados com mensagens de erro.
 -   Datas devem seguir os formatos:
