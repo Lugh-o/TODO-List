@@ -1,6 +1,6 @@
 import { showDeleteModal } from "./DeleteModal.js";
 import { showEditModal } from "./UcModal.js";
-import { getPriorityColor } from "../com.acelerazg/Utils.js";
+import { getPriorityColor } from "../common/Utils.js";
 
 export function showReadModal(task) {
 	const readModal = document.querySelector(".readModalContainer");

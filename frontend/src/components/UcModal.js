@@ -1,6 +1,6 @@
-import { refreshTaskList } from "../com.acelerazg/Utils.js";
-import { TaskService } from "../com.acelerazg/Store.js";
-import { globals } from "../com.acelerazg/Store.js";
+import { refreshTaskList } from "../common/Utils.js";
+import { TaskService } from "../Store.js";
+import { globals } from "../Store.js";
 
 export function showCreateModal() {
 	const tint = document.querySelector(".tint");

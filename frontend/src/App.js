@@ -1,12 +1,18 @@
-import { loadTasksByPriority } from "./com.acelerazg/TaskLoader.js";
-import { TaskService } from "./com.acelerazg/Store.js";
+import { loadTasksByPriority } from "./task/TaskLoader.js";
+import { TaskService } from "./Store.js";
 import { closeReadModal } from "./components/ReadModal.js";
 import { closeDeleteModal } from "./components/DeleteModal.js";
 import { closeUcModal, showCreateModal } from "./components/UcModal.js";
-import { filterTasks } from "./com.acelerazg/Utils.js";
+import { filterTasks } from "./common/Utils.js";
 import { ucModalListener } from "./components/UcModal.js";
 
 export default function App() {
+	domLoadedListeners();
+	addButtonEventListeners();
+	ucModalListener();
+}
+
+function domLoadedListeners() {
 	window.addEventListener("DOMContentLoaded", async function () {
 		try {
 			const response = await fetch("../dbMock/tasksByPriority.json");
@@ -24,9 +30,6 @@ export default function App() {
 		const today = new Date().toISOString().split("T")[0];
 		document.getElementById("endDateForm").setAttribute("min", today);
 	});
-
-	addButtonEventListeners();
-	ucModalListener();
 }
 
 function addButtonEventListeners() {
