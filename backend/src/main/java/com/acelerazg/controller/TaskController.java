@@ -1,8 +1,8 @@
 package com.acelerazg.controller;
 
-import com.acelerazg.App;
 import com.acelerazg.common.Messages;
 import com.acelerazg.common.Response;
+import com.acelerazg.dao.TaskDAO;
 import com.acelerazg.model.Status;
 import com.acelerazg.model.Task;
 
@@ -18,10 +18,10 @@ import static com.acelerazg.common.DataValidator.isNullOrEmpty;
 import static com.acelerazg.common.DataValidator.validateTaskData;
 
 public class TaskController {
-    private final App app;
+    private final TaskDAO taskDAO;
 
-    public TaskController(App app) {
-        this.app = app;
+    public TaskController(TaskDAO taskDAO) {
+        this.taskDAO = taskDAO;
     }
 
     public Response<Task> createTask(String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
@@ -29,59 +29,55 @@ public class TaskController {
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 
+        Task task = new Task(name, description, endDate, priority, category, status);
+        Task createdTask = taskDAO.createTask(task);
 
-        Task task = new Task(app.generateNextTaskId(), name, description, endDate, priority, category, status);
-        app.getTasks().put(task.getId(), task);
-        return Response.success(201, Messages.SUCCESS_TASK_CREATED, task);
+        return Response.success(201, Messages.SUCCESS_TASK_CREATED, createdTask);
     }
 
     public Response<Task> getTaskById(int id) {
         if (id <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
-        Task task = app.getTasks().get(id);
+
+        Task task = taskDAO.findTaskById(id);
         return (task == null) ? Response.error(404, Messages.ERROR_NO_TASKS_FOUND) : Response.success(200, Messages.SUCCESS_TASK_RETRIEVED, task);
     }
 
     public Response<Map<Integer, Task>> getAllTasks() {
-        Map<Integer, Task> tasks = app.getTasks().values().stream().sorted().collect(Collectors.toMap(Task::getId, t -> t, (e1, e2) -> e1, LinkedHashMap::new));
+        Map<Integer, Task> tasks = taskDAO.getTasks().values().stream().sorted().collect(Collectors.toMap(Task::getId, t -> t, (e1, e2) -> e1, LinkedHashMap::new));
+
         return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, tasks);
     }
 
     public Response<Task> updateTask(int id, String name, String description, LocalDateTime endDate, Integer priority, String category, Status status) {
-
         if (id <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
 
-        Task task = app.getTasks().get(id);
-        if (task == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
+        Task existing = taskDAO.findTaskById(id);
+        if (existing == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
 
-        String finalName = (name != null && !name.trim().isEmpty()) ? name : task.getName();
-        String finalDescription = (description != null && !description.trim().isEmpty()) ? description : task.getDescription();
-        String finalCategory = (category != null && !category.trim().isEmpty()) ? category : task.getCategory();
-
-        Status finalStatus = (status != null) ? status : task.getStatus();
-        int finalPriority = (priority != null) ? priority : task.getPriority();
-        LocalDateTime finalEndDate = (endDate != null) ? endDate : task.getEndDate();
+        String finalName = (name != null && !name.trim().isEmpty()) ? name : existing.getName();
+        String finalDescription = (description != null && !description.trim().isEmpty()) ? description : existing.getDescription();
+        String finalCategory = (category != null && !category.trim().isEmpty()) ? category : existing.getCategory();
+        Status finalStatus = (status != null) ? status : existing.getStatus();
+        int finalPriority = (priority != null) ? priority : existing.getPriority();
+        LocalDateTime finalEndDate = (endDate != null) ? endDate : existing.getEndDate();
 
         Response<Void> validation = validateTaskData(finalName, finalDescription, finalCategory, finalStatus, finalPriority, finalEndDate, false);
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 
-        task.setName(finalName);
-        task.setDescription(finalDescription);
-        task.setCategory(finalCategory);
-        task.setStatus(finalStatus);
-        task.setPriority(finalPriority);
-        task.setEndDate(finalEndDate);
-        task.setModificationDate(LocalDateTime.now());
+        Task updatedData = new Task(finalName, finalDescription, finalEndDate, finalPriority, finalCategory, finalStatus);
+        Task updatedTask = taskDAO.updateTask(id, updatedData);
 
-        return Response.success(200, Messages.SUCCESS_TASK_UPDATED, task);
+        return Response.success(200, Messages.SUCCESS_TASK_UPDATED, updatedTask);
     }
 
     public Response<Void> deleteTask(int id) {
         if (id <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
-        if (!app.getTasks().containsKey(id)) {
-            return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
-        }
-        app.getTasks().remove(id);
+
+        Task task = taskDAO.findTaskById(id);
+        if (task == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
+
+        taskDAO.deleteTask(id);
         return Response.success(204, Messages.SUCCESS_TASK_DELETED, null);
     }
 
@@ -113,5 +109,4 @@ public class TaskController {
     private Map<Integer, Task> filterTasks(Predicate<Task> predicate) {
         return getAllTasks().getData().values().stream().filter(predicate).collect(Collectors.toMap(Task::getId, t -> t, (e1, e2) -> e1, LinkedHashMap::new));
     }
-
 }

@@ -1,9 +1,14 @@
 package com.acelerazg.model;
 
 public class Reminder {
-    private final int id;
+    private int id;
     private String message;
     private int hoursInAdvance;
+
+    public Reminder(String message, int hoursInAdvance) {
+        this.message = message;
+        this.hoursInAdvance = hoursInAdvance;
+    }
 
     public Reminder(int id, String message, int hoursInAdvance) {
         this.id = id;
@@ -29,6 +34,10 @@ public class Reminder {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

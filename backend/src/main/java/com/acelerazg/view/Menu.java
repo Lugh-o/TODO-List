@@ -1,11 +1,11 @@
 package com.acelerazg.view;
 
-import com.acelerazg.App;
 import com.acelerazg.common.InputReader;
 import com.acelerazg.common.Messages;
 import com.acelerazg.common.Response;
 import com.acelerazg.controller.ReminderController;
 import com.acelerazg.controller.TaskController;
+import com.acelerazg.dao.TaskDAO;
 import com.acelerazg.exceptions.CancelOperationException;
 import com.acelerazg.model.Reminder;
 import com.acelerazg.model.Status;
@@ -22,10 +22,10 @@ import static com.acelerazg.view.Printer.printSingleTaskResponse;
 import static com.acelerazg.view.Printer.printTaskListResponse;
 
 public class Menu {
+    private final TaskDAO taskDAO;
     private final TaskController taskController;
     private final ReminderController reminderController;
     private final InputReader inputReader;
-    private final App app;
     private final Map<String, Runnable> commands = new HashMap<>();
 
     {
@@ -40,14 +40,15 @@ public class Menu {
 
     }
 
-    public Menu(App app) {
-        this.taskController = new TaskController(app);
-        this.reminderController = new ReminderController(app);
+    public Menu() {
+        this.taskDAO = new TaskDAO();
+        this.taskController = new TaskController(taskDAO);
+        this.reminderController = new ReminderController(taskDAO);
         this.inputReader = new InputReader(new Scanner(System.in));
-        this.app = app;
     }
 
     public void run() {
+        taskDAO.loadDataFromXml();
         String input = "";
         try {
             while (!Objects.equals(input, "q")) {
@@ -57,7 +58,7 @@ public class Menu {
                 try {
                     if (Objects.equals(input, "q")) {
                         System.out.println(Messages.EXITING_APP);
-                        System.out.println(app.saveDataToXml().getMessage());
+                        System.out.println(taskDAO.saveDataToXml().getMessage());
                         return;
                     }
 
@@ -171,7 +172,9 @@ public class Menu {
     private void handleReminderManagement() {
         System.out.print(Messages.PROMPT_REMINDER_ID);
         int taskId = inputReader.readInt();
-        printSingleTaskResponse(taskController.getTaskById(taskId));
+        Response<Task> r = taskController.getTaskById(taskId);
+        printSingleTaskResponse(r);
+        if(r.getStatusCode() != 200) return;
         while (true) {
             System.out.println(Messages.PROMPT_REMINDER_OPTIONS);
             int option = inputReader.readInt();
@@ -196,6 +199,7 @@ public class Menu {
                     return;
                 default:
                     System.out.println(Messages.ERROR_REMINDER_RANGE);
+                    break;
             }
         }
     }

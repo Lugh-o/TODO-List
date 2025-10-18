@@ -1,32 +1,45 @@
 package com.acelerazg.controller;
 
-import com.acelerazg.App;
 import com.acelerazg.common.Messages;
 import com.acelerazg.common.Response;
+import com.acelerazg.dao.TaskDAO;
 import com.acelerazg.model.Status;
 import com.acelerazg.model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class TaskControllerTest {
 
     private TaskController taskController;
 
+    @Mock
+    private TaskDAO taskDAO;
+
     @BeforeEach
     void setUp() {
-        App app = new App();
-        this.taskController = new TaskController(app);
+        this.taskController = new TaskController(taskDAO);
     }
 
     @Test
     void createTaskSuccessful() {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
+        Task createdTask = new Task(1, "Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        when(taskDAO.createTask(any(Task.class))).thenReturn(createdTask);
 
         // WHEN
         Response<Task> response = taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
@@ -34,39 +47,36 @@ class TaskControllerTest {
         // THEN
         assertEquals(201, response.getStatusCode());
         assertEquals(Messages.SUCCESS_TASK_CREATED, response.getMessage());
-
-        Task task = response.getData();
-        assertNotNull(task);
-        assertEquals("Task 1", task.getName());
-        assertEquals(1, task.getId());
-
-        assertEquals(task, taskController.getTaskById(task.getId()).getData());
+        assertEquals(createdTask, response.getData());
+        verify(taskDAO).createTask(any(Task.class));
     }
 
     @Test
     void createTaskEmptyName() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
+        String name = "";
 
         // WHEN
-        Response<Task> response = taskController.createTask("", "Description", endDate, 3, "Work", Status.TODO);
+        Response<Task> response = taskController.createTask(name, "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
 
         // THEN
         assertEquals(400, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO, never()).createTask(any());
     }
 
     @Test
     void createTaskPriorityOutOfRange() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
+        int priority = 20;
 
         // WHEN
-        Response<Task> response = taskController.createTask("Task", "Description", endDate, 20, "Work", Status.TODO);
+        Response<Task> response = taskController.createTask("Task", "Description", LocalDateTime.now().plusDays(1), priority, "Work", Status.TODO);
 
         // THEN
         assertEquals(422, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO, never()).createTask(any());
     }
 
     @Test
@@ -80,112 +90,136 @@ class TaskControllerTest {
         // THEN
         assertEquals(422, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO, never()).createTask(any());
     }
 
     @Test
     void getTaskByIdSuccessful() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 4, "Work", Status.TODO);
+        when(taskDAO.findTaskById(1)).thenReturn(task);
 
         // WHEN
         Response<Task> response = taskController.getTaskById(1);
 
         // THEN
         assertEquals(200, response.getStatusCode());
+        assertEquals(task, response.getData());
+        verify(taskDAO).findTaskById(1);
     }
 
     @Test
     void getTaskByIdInvalid() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        int taskId = -1;
 
         // WHEN
-        Response<Task> response = taskController.getTaskById(-1);
+        Response<Task> response = taskController.getTaskById(taskId);
 
         // THEN
         assertEquals(400, response.getStatusCode());
+        assertNull(response.getData());
+        verify(taskDAO, never()).findTaskById(anyInt());
     }
 
     @Test
     void getTaskByIdNoTask() {
+        // GIVEN
+        when(taskDAO.findTaskById(1)).thenReturn(null);
+
         // WHEN
         Response<Task> response = taskController.getTaskById(1);
 
         // THEN
         assertEquals(404, response.getStatusCode());
+        assertNull(response.getData());
+        verify(taskDAO).findTaskById(1);
     }
 
     @Test
     void getAllTasks() {
+        // GIVEN
+        Map<Integer, Task> tasks = new HashMap<>();
+        tasks.put(1, new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO));
+        when(taskDAO.getTasks()).thenReturn(tasks);
+
         // WHEN
         Response<Map<Integer, Task>> response = taskController.getAllTasks();
 
         // THEN
         assertEquals(200, response.getStatusCode());
+        assertEquals(tasks, response.getData());
+        verify(taskDAO).getTasks();
     }
 
     @Test
     void updateTaskSuccessful() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
-        Task originalTask = taskController.getTaskById(1).getData();
-
-        originalTask = new Task(originalTask.getId(), originalTask.getName(), originalTask.getDescription(), originalTask.getEndDate(), originalTask.getPriority(), originalTask.getCategory(), originalTask.getStatus());
-
+        Task existing = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 4, "Work", Status.TODO);
+        Task updated = new Task(1, "Updated", "Description", existing.getEndDate(), 4, "Work", Status.DONE);
+        when(taskDAO.findTaskById(1)).thenReturn(existing);
+        when(taskDAO.updateTask(eq(1), any(Task.class))).thenReturn(updated);
 
         // WHEN
-        Response<Task> response = taskController.updateTask(1, "Task Updated", null, null, null, null, Status.DONE);
-        Task newTask = response.getData();
+        Response<Task> response = taskController.updateTask(1, "Updated", null, null, null, null, Status.DONE);
 
         // THEN
         assertEquals(200, response.getStatusCode());
-        assertEquals(originalTask.getDescription(), newTask.getDescription());
-        assertNotEquals(originalTask.getName(), newTask.getName());
+        assertEquals(updated, response.getData());
+        verify(taskDAO).updateTask(eq(1), any(Task.class));
     }
 
     @Test
     void updateTaskInvalidId() {
+        // GIVEN
+        int taskId = -13;
+
         // WHEN
-        Response<Task> response = taskController.updateTask(-13, "Task Updated", null, null, null, null, Status.DONE);
+        Response<Task> response = taskController.updateTask(taskId, "Task Updated", null, null, null, null, Status.DONE);
 
         // THEN
         assertEquals(400, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO, never()).updateTask(anyInt(), any());
     }
 
     @Test
     void updateTaskNoTask() {
+        // GIVEN
+        when(taskDAO.findTaskById(2)).thenReturn(null);
+
         // WHEN
         Response<Task> response = taskController.updateTask(2, "Task Updated", null, null, null, null, Status.DONE);
 
         // THEN
         assertEquals(404, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO).findTaskById(2);
+        verify(taskDAO, never()).updateTask(anyInt(), any());
     }
 
     @Test
     void updateTaskPriorityOutOfRange() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        Task existingTask = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
+        when(taskDAO.findTaskById(1)).thenReturn(existingTask);
+        int invalidPriority = 30;
 
         // WHEN
-        Response<Task> response = taskController.updateTask(1, "Task Updated", null, null, 30, null, Status.DONE);
+        Response<Task> response = taskController.updateTask(1, "Task Updated", null, null, invalidPriority, null, Status.DONE);
 
         // THEN
         assertEquals(422, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO, never()).updateTask(anyInt(), any());
     }
 
     @Test
     void updateTaskPastEndDate() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
+        Task existingTask = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
+        when(taskDAO.findTaskById(1)).thenReturn(existingTask);
         LocalDateTime pastDate = LocalDateTime.now().minusDays(1);
-        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         // WHEN
         Response<Task> response = taskController.updateTask(1, "Task Updated", null, pastDate, 3, null, Status.DONE);
@@ -193,40 +227,50 @@ class TaskControllerTest {
         // THEN
         assertEquals(422, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO, never()).updateTask(anyInt(), any());
     }
 
     @Test
     void deleteTaskSuccessful() {
         // GIVEN
-        LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        Task existing = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 4, "Work", Status.TODO);
+        when(taskDAO.findTaskById(1)).thenReturn(existing);
 
         // WHEN
         Response<Void> response = taskController.deleteTask(1);
 
         // THEN
         assertEquals(204, response.getStatusCode());
-        assertEquals(0, taskController.getAllTasks().getData().size());
         assertNull(response.getData());
+        verify(taskDAO).deleteTask(1);
     }
 
     @Test
     void deleteTaskInvalidId() {
+        // GIVEN
+        int taskId = -3;
+
         // WHEN
-        Response<Void> response = taskController.deleteTask(-3);
+        Response<Void> response = taskController.deleteTask(taskId);
 
         // THEN
         assertEquals(400, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO, never()).deleteTask(anyInt());
     }
 
     @Test
     void deleteTaskNoTask() {
+        // GIVEN
+        when(taskDAO.findTaskById(1)).thenReturn(null);
+
         // WHEN
         Response<Void> response = taskController.deleteTask(1);
 
         // THEN
         assertEquals(404, response.getStatusCode());
         assertNull(response.getData());
+        verify(taskDAO).findTaskById(1);
+        verify(taskDAO, never()).deleteTask(anyInt());
     }
 }
