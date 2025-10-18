@@ -1,5 +1,5 @@
 import { TaskService } from "./Store.js";
-import { getPriorityColor } from "../common/Utils.js";
+import { getPriorityColor } from "./Utils.js";
 import { showReadModal } from "../components/ReadModal.js";
 
 export function taskCard(task) {
