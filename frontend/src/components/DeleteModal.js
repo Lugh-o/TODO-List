@@ -1,6 +1,6 @@
-import { TaskService } from "../com.acelerazg/Store.js";
+import { TaskService } from "../Store.js";
 import { closeReadModal } from "./ReadModal.js";
-import { refreshTaskList } from "../com.acelerazg/Utils.js";
+import { refreshTaskList } from "../common/Utils.js";
 
 export function showDeleteModal(task) {
 	const deleteModal = document.querySelector(".deleteModalContainer");

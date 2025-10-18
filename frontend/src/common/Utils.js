@@ -1,6 +1,6 @@
-import { loadTasksByPriority } from "./TaskLoader.js";
-import { loadTasksByStatus } from "./TaskLoader.js";
-import { globals } from "./Store.js";
+import { loadTasksByPriority } from "../task/TaskLoader.js";
+import { loadTasksByStatus } from "../task/TaskLoader.js";
+import { globals } from "../Store.js";
 
 export function getPriorityColor(priority) {
 	return globals.colors[`Priority${parseInt(priority)}`];
