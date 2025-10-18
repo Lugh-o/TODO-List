@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static com.acelerazg.common.DataValidator.isNullOrEmpty;
-import static com.acelerazg.common.DataValidator.validateTaskData;
+import static com.acelerazg.common.DataValidator.*;
 
 public class TaskController {
     private final TaskDAO taskDAO;
@@ -25,7 +24,7 @@ public class TaskController {
     }
 
     public Response<Task> createTask(String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
-        Response<Void> validation = validateTaskData(name, description, category, status, priority, endDate, true);
+        Response<Void> validation = validateCreateTaskData(name, description, category, status, priority, endDate);
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 
@@ -61,7 +60,7 @@ public class TaskController {
         int finalPriority = (priority != null) ? priority : existing.getPriority();
         LocalDateTime finalEndDate = (endDate != null) ? endDate : existing.getEndDate();
 
-        Response<Void> validation = validateTaskData(finalName, finalDescription, finalCategory, finalStatus, finalPriority, finalEndDate, false);
+        Response<Void> validation = validateUpdateTaskData(finalName, finalPriority, finalEndDate);
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 

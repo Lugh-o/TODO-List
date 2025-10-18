@@ -18,13 +18,13 @@ class DataValidatorTest {
 
     @Test
     void testValidateTaskData_EmptyName() {
-        Response<Void> response = DataValidator.validateTaskData("", "desc", "cat", Status.TODO, 3, LocalDateTime.now().plusDays(1), true);
+        Response<Void> response = DataValidator.validateCreateTaskData("", "desc", "cat", Status.TODO, 3, LocalDateTime.now().plusDays(1));
         assertEquals(400, response.getStatusCode());
     }
 
     @Test
     void testValidateTaskData_Valid() {
-        Response<Void> response = DataValidator.validateTaskData("Task", "Desc", "Cat", Status.TODO, 3, LocalDateTime.now().plusDays(1), true);
+        Response<Void> response = DataValidator.validateUpdateTaskData("Task", 3, LocalDateTime.now().plusDays(1));
         assertEquals(200, response.getStatusCode());
     }
 

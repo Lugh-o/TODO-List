@@ -174,7 +174,7 @@ public class Menu {
         int taskId = inputReader.readInt();
         Response<Task> r = taskController.getTaskById(taskId);
         printSingleTaskResponse(r);
-        if(r.getStatusCode() != 200) return;
+        if (r.getStatusCode() != 200) return;
         while (true) {
             System.out.println(Messages.PROMPT_REMINDER_OPTIONS);
             int option = inputReader.readInt();
