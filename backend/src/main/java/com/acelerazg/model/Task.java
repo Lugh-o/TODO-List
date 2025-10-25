@@ -16,23 +16,7 @@ public class Task implements Comparable<Task> {
     private Status status;
     private Map<Integer, Reminder> reminders = new HashMap<>();
 
-    // Sem id
-    public Task(String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
-        this.name = name;
-        this.description = description;
-        this.endDate = endDate;
-
-        if (priority > 5) {
-            this.priority = 5;
-        } else this.priority = Math.max(priority, 0);
-
-        this.category = category;
-        this.creationDate = LocalDateTime.now();
-        this.modificationDate = LocalDateTime.now();
-        this.status = status;
-    }
-
-    public Task(int id, String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
+    public Task(int id, String name, String description, LocalDateTime endDate, int priority, String category, LocalDateTime creationDate, LocalDateTime modificationDate, Status status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,8 +27,8 @@ public class Task implements Comparable<Task> {
         } else this.priority = Math.max(priority, 0);
 
         this.category = category;
-        this.creationDate = LocalDateTime.now();
-        this.modificationDate = LocalDateTime.now();
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
         this.status = status;
     }
 
@@ -148,5 +132,9 @@ public class Task implements Comparable<Task> {
     @Override
     public String toString() {
         return "{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' + ", endDate=" + endDate + ", priority=" + priority + ", category='" + category + '\'' + ", creationDate=" + creationDate + ", modificationDate=" + modificationDate + ", status=" + status + ", reminders=" + reminders.values() + '}';
+    }
+
+    public static TaskBuilder builder() {
+        return new TaskBuilder();
     }
 }

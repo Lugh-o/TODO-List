@@ -68,7 +68,6 @@ Para compilar:
 
 Para executar a aplicação:
 
-    mkdir -p ./data
     ./gradlew run
 
 Para executar os testes unitários:

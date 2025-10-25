@@ -5,12 +5,7 @@ public class Reminder {
     private String message;
     private int hoursInAdvance;
 
-    public Reminder(String message, int hoursInAdvance) {
-        this.message = message;
-        this.hoursInAdvance = hoursInAdvance;
-    }
-
-    public Reminder(int id, String message, int hoursInAdvance) {
+    protected Reminder(int id, String message, int hoursInAdvance) {
         this.id = id;
         this.message = message;
         this.hoursInAdvance = hoursInAdvance;
@@ -43,5 +38,9 @@ public class Reminder {
     @Override
     public String toString() {
         return "{" + "id=" + id + ", hoursInAdvance=" + hoursInAdvance + ", message='" + message + '\'' + '}';
+    }
+
+    public static ReminderBuilder builder() {
+        return new ReminderBuilder();
     }
 }

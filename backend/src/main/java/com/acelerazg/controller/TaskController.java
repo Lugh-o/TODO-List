@@ -28,7 +28,7 @@ public class TaskController {
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 
-        Task task = new Task(name, description, endDate, priority, category, status);
+        Task task = Task.builder().name(name).description(description).endDate(endDate).priority(priority).category(category).status(status).build();
         Task createdTask = taskDAO.createTask(task);
 
         return Response.success(201, Messages.SUCCESS_TASK_CREATED, createdTask);
@@ -64,7 +64,8 @@ public class TaskController {
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 
-        Task updatedData = new Task(finalName, finalDescription, finalEndDate, finalPriority, finalCategory, finalStatus);
+        Task updatedData = Task.builder().name(finalName).description(finalDescription).endDate(finalEndDate).priority(finalPriority).category(finalCategory).status(finalStatus).build();
+
         Task updatedTask = taskDAO.updateTask(id, updatedData);
 
         return Response.success(200, Messages.SUCCESS_TASK_UPDATED, updatedTask);

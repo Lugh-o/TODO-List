@@ -34,7 +34,8 @@ class ReminderControllerTest {
     @Test
     void createReminderSuccessful() {
         // GIVEN
-        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
+
         when(taskDAO.findTaskById(1)).thenReturn(task);
         when(taskDAO.createReminder(eq(1), any(Reminder.class))).thenAnswer(invocation -> {
             Reminder reminder = invocation.getArgument(1);
@@ -116,8 +117,9 @@ class ReminderControllerTest {
     @Test
     void updateReminderSuccessful() {
         // GIVEN
-        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
-        Reminder reminder = new Reminder(1, "Old message", 3);
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
+
+        Reminder reminder = Reminder.builder().id(1).message("Old message").hoursInAdvance(3).build();
         task.getReminders().put(1, reminder);
         when(taskDAO.findTaskById(1)).thenReturn(task);
         when(taskDAO.findReminderById(1, 1)).thenReturn(reminder);
@@ -174,7 +176,8 @@ class ReminderControllerTest {
     @Test
     void updateReminderNotFound() {
         // GIVEN
-        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
+
         when(taskDAO.findTaskById(1)).thenReturn(task);
 
         // WHEN
@@ -190,8 +193,8 @@ class ReminderControllerTest {
     @Test
     void updateReminderInvalidData() {
         // GIVEN
-        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
-        Reminder reminder = new Reminder(1, "Message", 2);
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
+        Reminder reminder = Reminder.builder().id(1).message("Message").hoursInAdvance(2).build();
         task.getReminders().put(1, reminder);
         when(taskDAO.findTaskById(1)).thenReturn(task);
         when(taskDAO.findReminderById(1, 1)).thenReturn(reminder);
@@ -210,8 +213,8 @@ class ReminderControllerTest {
     @Test
     void deleteReminderSuccessful() {
         // GIVEN
-        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
-        Reminder reminder = new Reminder(1, "Message", 3);
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
+        Reminder reminder = Reminder.builder().id(1).message("Message").hoursInAdvance(2).build();
         task.getReminders().put(1, reminder);
         when(taskDAO.findTaskById(1)).thenReturn(task);
         doAnswer(invocation -> {
@@ -248,7 +251,7 @@ class ReminderControllerTest {
     @Test
     void deleteReminderNotFound() {
         // GIVEN
-        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
         when(taskDAO.findTaskById(1)).thenReturn(task);
 
         // WHEN

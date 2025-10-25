@@ -119,9 +119,7 @@ public class XmlUtilities {
         LocalDateTime creationDate = LocalDateTime.parse(getChildText(taskElem, "creationDate"));
         LocalDateTime modificationDate = LocalDateTime.parse(getChildText(taskElem, "modificationDate"));
 
-        Task task = new Task(id, name, description, endDate, priority, category, status);
-        task.setCreationDate(creationDate);
-        task.setModificationDate(modificationDate);
+        Task task = Task.builder().id(id).name(name).description(description).endDate(endDate).priority(priority).category(category).creationDate(creationDate).modificationDate(modificationDate).status(status).build();
 
         NodeList reminderNodes = taskElem.getElementsByTagName("reminder");
         for (int j = 0; j < reminderNodes.getLength(); j++) {
@@ -137,7 +135,7 @@ public class XmlUtilities {
         int reminderId = Integer.parseInt(reminderElem.getAttribute("id"));
         String message = getChildText(reminderElem, "message");
         int hoursInAdvance = Integer.parseInt(getChildText(reminderElem, "hoursInAdvance"));
-        return new Reminder(reminderId, message, hoursInAdvance);
+        return Reminder.builder().id(reminderId).message(message).hoursInAdvance(hoursInAdvance).build();
     }
 
     private static void appendChild(Document doc, Element parent, String tag, String text) {

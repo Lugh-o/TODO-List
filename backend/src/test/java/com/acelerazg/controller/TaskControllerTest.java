@@ -38,7 +38,7 @@ class TaskControllerTest {
     void createTaskSuccessful() {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
-        Task createdTask = new Task(1, "Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        Task createdTask = Task.builder().id(1).name("Task 1").description("Description").endDate(endDate).priority(4).category("Work").status(Status.TODO).build();
         when(taskDAO.createTask(any(Task.class))).thenReturn(createdTask);
 
         // WHEN
@@ -96,7 +96,7 @@ class TaskControllerTest {
     @Test
     void getTaskByIdSuccessful() {
         // GIVEN
-        Task task = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 4, "Work", Status.TODO);
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(4).category("Work").status(Status.TODO).build();
         when(taskDAO.findTaskById(1)).thenReturn(task);
 
         // WHEN
@@ -139,8 +139,9 @@ class TaskControllerTest {
     @Test
     void getAllTasks() {
         // GIVEN
+        Task task = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
         Map<Integer, Task> tasks = new HashMap<>();
-        tasks.put(1, new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO));
+        tasks.put(1, task);
         when(taskDAO.getTasks()).thenReturn(tasks);
 
         // WHEN
@@ -155,8 +156,8 @@ class TaskControllerTest {
     @Test
     void updateTaskSuccessful() {
         // GIVEN
-        Task existing = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 4, "Work", Status.TODO);
-        Task updated = new Task(1, "Updated", "Description", existing.getEndDate(), 4, "Work", Status.DONE);
+        Task existing = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(4).category("Work").status(Status.TODO).build();
+        Task updated = Task.builder().id(1).name("Updated").description("Description").endDate(existing.getEndDate()).priority(4).category("Work").status(Status.TODO).build();
         when(taskDAO.findTaskById(1)).thenReturn(existing);
         when(taskDAO.updateTask(eq(1), any(Task.class))).thenReturn(updated);
 
@@ -201,7 +202,7 @@ class TaskControllerTest {
     @Test
     void updateTaskPriorityOutOfRange() {
         // GIVEN
-        Task existingTask = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
+        Task existingTask = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(4).category("Work").status(Status.TODO).build();
         when(taskDAO.findTaskById(1)).thenReturn(existingTask);
         int invalidPriority = 30;
 
@@ -217,7 +218,7 @@ class TaskControllerTest {
     @Test
     void updateTaskPastEndDate() {
         // GIVEN
-        Task existingTask = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 3, "Work", Status.TODO);
+        Task existingTask = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(3).category("Work").status(Status.TODO).build();
         when(taskDAO.findTaskById(1)).thenReturn(existingTask);
         LocalDateTime pastDate = LocalDateTime.now().minusDays(1);
 
@@ -233,7 +234,7 @@ class TaskControllerTest {
     @Test
     void deleteTaskSuccessful() {
         // GIVEN
-        Task existing = new Task(1, "Task 1", "Description", LocalDateTime.now().plusDays(1), 4, "Work", Status.TODO);
+        Task existing = Task.builder().id(1).name("Task 1").description("Description").endDate(LocalDateTime.now().plusDays(1)).priority(4).category("Work").status(Status.TODO).build();
         when(taskDAO.findTaskById(1)).thenReturn(existing);
 
         // WHEN

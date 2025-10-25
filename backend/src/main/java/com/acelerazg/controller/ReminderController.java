@@ -25,7 +25,8 @@ public class ReminderController {
         Task task = taskDAO.findTaskById(taskId);
         if (task == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
 
-        Reminder reminder = new Reminder(message, hoursInAdvance);
+        Reminder reminder = Reminder.builder().message(message).hoursInAdvance(hoursInAdvance).build();
+
         taskDAO.createReminder(taskId, reminder);
 
         return Response.success(201, Messages.SUCCESS_REMINDER_CREATED, task);
@@ -47,7 +48,7 @@ public class ReminderController {
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 
-        Reminder newReminder = new Reminder(finalMessage, finalHours);
+        Reminder newReminder = Reminder.builder().message(finalMessage).hoursInAdvance(finalHours).build();
         taskDAO.updateReminder(taskId, reminderId, newReminder);
 
         return Response.success(200, Messages.SUCCESS_REMINDER_UPDATED, task);
