@@ -5,7 +5,7 @@ import com.acelerazg.common.Response;
 import com.acelerazg.model.Reminder;
 import com.acelerazg.model.Task;
 import com.acelerazg.persistency.XmlData;
-import com.acelerazg.persistency.XmlUtilities;
+import com.acelerazg.persistency.XmlRepository;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -19,11 +19,13 @@ public class TaskDAO {
     private static final String OUT_DIR = "data";
     private static final String OUT_FILE = "tasks.xml";
     private static final String FILE_PATH = "./" + OUT_DIR + "/" + OUT_FILE;
+    private final XmlRepository repository;
 
     public TaskDAO() {
         this.tasks = new HashMap<>();
         this.nextTaskId = 1;
         this.nextReminderId = 1;
+        this.repository = new XmlRepository();
     }
 
     public Map<Integer, Task> getTasks() {
@@ -116,8 +118,7 @@ public class TaskDAO {
                 outDir.mkdirs();
             }
 
-            XmlUtilities.saveTasksToXml(tasks, nextTaskId, nextReminderId, FILE_PATH);
-            return Response.success(200, Messages.SUCCESS_SAVE_DATA, null);
+            repository.saveTasksToXml(tasks, nextTaskId, nextReminderId, FILE_PATH);            return Response.success(200, Messages.SUCCESS_SAVE_DATA, null);
         } catch (Exception e) {
             return Response.error(500, Messages.ERROR_SAVE_DATA);
         }
@@ -125,8 +126,7 @@ public class TaskDAO {
 
     public void loadDataFromXml() {
         try {
-            XmlData data = XmlUtilities.loadTasksFromXml(FILE_PATH);
-            this.tasks = data.getTasks();
+            XmlData data = repository.loadTasksFromXml(FILE_PATH);            this.tasks = data.getTasks();
             this.nextTaskId = data.getNextTaskId();
             this.nextReminderId = data.getNextReminderId();
             System.out.println(Messages.SUCCESS_LOAD_DATA);

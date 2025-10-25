@@ -7,75 +7,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class XmlUtilities {
-
-    public static void saveTasksToXml(Map<Integer, Task> tasks, int nextTaskId, int nextReminderId, String filePath) throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.newDocument();
-
-        Element root = doc.createElement("tasks");
-        root.setAttribute("nextTaskId", String.valueOf(nextTaskId));
-        root.setAttribute("nextReminderId", String.valueOf(nextReminderId));
-        doc.appendChild(root);
-
-        for (Task task : tasks.values()) {
-            Element taskElem = createTaskElement(doc, task);
-            root.appendChild(taskElem);
-        }
-
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-        transformer.transform(new DOMSource(doc), new StreamResult(new File(filePath)));
-    }
-
-    public static XmlData loadTasksFromXml(String filePath) throws Exception {
-        Map<Integer, Task> tasks = new LinkedHashMap<>();
-        int nextTaskId = 1;
-        int nextReminderId = 1;
-
-        File file = new File(filePath);
-        if (!file.exists()) {
-            return new XmlData(tasks, nextTaskId, nextReminderId);
-        }
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(file);
-        doc.getDocumentElement().normalize();
-
-        Element root = doc.getDocumentElement();
-        if (root.hasAttribute("nextTaskId")) {
-            nextTaskId = Integer.parseInt(root.getAttribute("nextTaskId"));
-        }
-        if (root.hasAttribute("nextReminderId")) {
-            nextReminderId = Integer.parseInt(root.getAttribute("nextReminderId"));
-        }
-
-        NodeList taskNodes = root.getElementsByTagName("task");
-        for (int i = 0; i < taskNodes.getLength(); i++) {
-            Element taskElem = (Element) taskNodes.item(i);
-            Task task = parseTask(taskElem);
-            tasks.put(task.getId(), task);
-        }
-
-        return new XmlData(tasks, nextTaskId, nextReminderId);
-    }
-
-    private static Element createTaskElement(Document doc, Task task) {
+    protected static Element createTaskElement(Document doc, Task task) {
         Element taskElem = doc.createElement("task");
         taskElem.setAttribute("id", String.valueOf(task.getId()));
 
@@ -99,7 +34,7 @@ public class XmlUtilities {
         return taskElem;
     }
 
-    private static Element createReminderElement(Document doc, Reminder reminder) {
+    protected static Element createReminderElement(Document doc, Reminder reminder) {
         Element reminderElem = doc.createElement("reminder");
         reminderElem.setAttribute("id", String.valueOf(reminder.getId()));
         appendChild(doc, reminderElem, "message", reminder.getMessage());
@@ -107,7 +42,7 @@ public class XmlUtilities {
         return reminderElem;
     }
 
-    private static Task parseTask(Element taskElem) {
+    protected static Task parseTask(Element taskElem) {
         int id = Integer.parseInt(taskElem.getAttribute("id"));
         String name = getChildText(taskElem, "name");
         String description = getChildText(taskElem, "description");
@@ -131,20 +66,20 @@ public class XmlUtilities {
         return task;
     }
 
-    private static Reminder parseReminder(Element reminderElem) {
+    protected static Reminder parseReminder(Element reminderElem) {
         int reminderId = Integer.parseInt(reminderElem.getAttribute("id"));
         String message = getChildText(reminderElem, "message");
         int hoursInAdvance = Integer.parseInt(getChildText(reminderElem, "hoursInAdvance"));
         return Reminder.builder().id(reminderId).message(message).hoursInAdvance(hoursInAdvance).build();
     }
 
-    private static void appendChild(Document doc, Element parent, String tag, String text) {
+    protected static void appendChild(Document doc, Element parent, String tag, String text) {
         Element elem = doc.createElement(tag);
         elem.appendChild(doc.createTextNode(text != null ? text : ""));
         parent.appendChild(elem);
     }
 
-    private static String getChildText(Element parent, String tag) {
+    protected static String getChildText(Element parent, String tag) {
         NodeList nodes = parent.getElementsByTagName(tag);
         if (nodes.getLength() > 0) {
             return nodes.item(0).getTextContent();
