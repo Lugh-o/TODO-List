@@ -6,6 +6,8 @@ import com.acelerazg.common.Response;
 import com.acelerazg.controller.ReminderController;
 import com.acelerazg.controller.TaskController;
 import com.acelerazg.dao.TaskDAO;
+import com.acelerazg.dto.CreateTaskDTO;
+import com.acelerazg.dto.UpdateTaskDTO;
 import com.acelerazg.exceptions.CancelOperationException;
 import com.acelerazg.model.Reminder;
 import com.acelerazg.model.Status;
@@ -119,7 +121,8 @@ public class Menu {
         int priority = inputReader.readPriority();
         String category = inputReader.readNonEmptyString(Messages.PROMPT_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = inputReader.readStatus();
-        printSingleTaskResponse(taskController.createTask(name, description, endDate, priority, category, status));
+        CreateTaskDTO createTaskDTO = new CreateTaskDTO(name, description, endDate, priority, category, status);
+        printSingleTaskResponse(taskController.createTask(createTaskDTO));
     }
 
     private void handleUpdateTask() {
@@ -131,7 +134,8 @@ public class Menu {
         Integer priority = inputReader.readOptionalPriority();
         String category = inputReader.readOptionalNonEmptyString(Messages.PROMPT_NEW_CATEGORY, Messages.ERROR_EMPTY_CATEGORY);
         Status status = inputReader.readOptionalStatus();
-        printSingleTaskResponse(taskController.updateTask(id, name, description, endDate, priority, category, status));
+        UpdateTaskDTO updateTaskDTO = new UpdateTaskDTO(id, name, description, endDate, priority, category, status);
+        printSingleTaskResponse(taskController.updateTask(updateTaskDTO));
     }
 
     private void handleDeleteTask() {

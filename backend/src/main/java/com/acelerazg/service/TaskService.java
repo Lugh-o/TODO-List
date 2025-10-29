@@ -3,6 +3,8 @@ package com.acelerazg.service;
 import com.acelerazg.common.Messages;
 import com.acelerazg.common.Response;
 import com.acelerazg.dao.TaskDAO;
+import com.acelerazg.dto.CreateTaskDTO;
+import com.acelerazg.dto.UpdateTaskDTO;
 import com.acelerazg.model.Status;
 import com.acelerazg.model.Task;
 
@@ -23,12 +25,12 @@ public class TaskService {
         this.taskDAO = taskDAO;
     }
 
-    public Response<Task> createTask(String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
-        Response<Void> validation = validateCreateTaskData(name, description, category, status, priority, endDate);
+    public Response<Task> createTask(CreateTaskDTO createTaskDTO) {
+        Response<Void> validation = validateCreateTaskData(createTaskDTO.getName(), createTaskDTO.getDescription(), createTaskDTO.getCategory(), createTaskDTO.getStatus(), createTaskDTO.getPriority(), createTaskDTO.getEndDate());
         if (validation.getStatusCode() != 200)
             return Response.error(validation.getStatusCode(), validation.getMessage());
 
-        Task task = Task.builder().name(name).description(description).endDate(endDate).priority(priority).category(category).status(status).build();
+        Task task = Task.builder().name(createTaskDTO.getName()).description(createTaskDTO.getDescription()).endDate(createTaskDTO.getEndDate()).priority(createTaskDTO.getPriority()).category(createTaskDTO.getCategory()).status(createTaskDTO.getStatus()).build();
         Task createdTask = taskDAO.createTask(task);
 
         return Response.success(201, Messages.SUCCESS_TASK_CREATED, createdTask);
@@ -47,18 +49,18 @@ public class TaskService {
         return Response.success(200, Messages.SUCCESS_TASKS_RETRIEVED, tasks);
     }
 
-    public Response<Task> updateTask(int id, String name, String description, LocalDateTime endDate, Integer priority, String category, Status status) {
-        if (id <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
+    public Response<Task> updateTask(UpdateTaskDTO updateTaskDTO) {
+        if (updateTaskDTO.getId() <= 0) return Response.error(400, Messages.ERROR_INVALID_ID);
 
-        Task existing = taskDAO.findTaskById(id);
+        Task existing = taskDAO.findTaskById(updateTaskDTO.getId());
         if (existing == null) return Response.error(404, Messages.ERROR_TASK_NOT_FOUND);
 
-        String finalName = (name != null && !name.trim().isEmpty()) ? name : existing.getName();
-        String finalDescription = (description != null && !description.trim().isEmpty()) ? description : existing.getDescription();
-        String finalCategory = (category != null && !category.trim().isEmpty()) ? category : existing.getCategory();
-        Status finalStatus = (status != null) ? status : existing.getStatus();
-        int finalPriority = (priority != null) ? priority : existing.getPriority();
-        LocalDateTime finalEndDate = (endDate != null) ? endDate : existing.getEndDate();
+        String finalName = (updateTaskDTO.getName() != null && !updateTaskDTO.getName().trim().isEmpty()) ? updateTaskDTO.getName() : existing.getName();
+        String finalDescription = (updateTaskDTO.getDescription() != null && !updateTaskDTO.getDescription().trim().isEmpty()) ? updateTaskDTO.getDescription() : existing.getDescription();
+        String finalCategory = (updateTaskDTO.getCategory() != null && !updateTaskDTO.getCategory().trim().isEmpty()) ? updateTaskDTO.getCategory() : existing.getCategory();
+        Status finalStatus = (updateTaskDTO.getStatus() != null) ? updateTaskDTO.getStatus() : existing.getStatus();
+        int finalPriority = (updateTaskDTO.getPriority() != null) ? updateTaskDTO.getPriority() : existing.getPriority();
+        LocalDateTime finalEndDate = (updateTaskDTO.getEndDate() != null) ? updateTaskDTO.getEndDate() : existing.getEndDate();
 
         Response<Void> validation = validateUpdateTaskData(finalName, finalPriority, finalEndDate);
         if (validation.getStatusCode() != 200)
@@ -66,7 +68,7 @@ public class TaskService {
 
         Task updatedData = Task.builder().name(finalName).description(finalDescription).endDate(finalEndDate).priority(finalPriority).category(finalCategory).status(finalStatus).build();
 
-        Task updatedTask = taskDAO.updateTask(id, updatedData);
+        Task updatedTask = taskDAO.updateTask(updateTaskDTO.getId(), updatedData);
 
         return Response.success(200, Messages.SUCCESS_TASK_UPDATED, updatedTask);
     }

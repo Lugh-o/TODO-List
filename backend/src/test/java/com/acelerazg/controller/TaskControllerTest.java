@@ -2,6 +2,8 @@ package com.acelerazg.controller;
 
 import com.acelerazg.common.Messages;
 import com.acelerazg.common.Response;
+import com.acelerazg.dto.CreateTaskDTO;
+import com.acelerazg.dto.UpdateTaskDTO;
 import com.acelerazg.model.Status;
 import com.acelerazg.model.Task;
 import com.acelerazg.service.TaskService;
@@ -18,8 +20,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TaskControllerTest {
@@ -35,18 +37,19 @@ class TaskControllerTest {
         // GIVEN
         LocalDateTime endDate = LocalDateTime.now().plusDays(1);
         Task createdTask = Task.builder().id(1).name("Task 1").description("Description").endDate(endDate).priority(4).category("Work").status(Status.TODO).build();
+        CreateTaskDTO createTaskDTO = new CreateTaskDTO("Task 1", "Description", endDate, 4, "Work", Status.TODO);
 
         Response<Task> expectedResponse = Response.success(201, Messages.SUCCESS_TASK_CREATED, createdTask);
-        when(taskService.createTask(anyString(), anyString(), any(LocalDateTime.class), anyInt(), anyString(), any(Status.class))).thenReturn(expectedResponse);
+        when(taskService.createTask(any(CreateTaskDTO.class))).thenReturn(expectedResponse);
 
         // WHEN
-        Response<Task> response = taskController.createTask("Task 1", "Description", endDate, 4, "Work", Status.TODO);
+        Response<Task> response = taskController.createTask(createTaskDTO);
 
         // THEN
         assertEquals(201, response.getStatusCode());
         assertEquals(Messages.SUCCESS_TASK_CREATED, response.getMessage());
         assertEquals(createdTask, response.getData());
-        verify(taskService).createTask(anyString(), anyString(), any(LocalDateTime.class), anyInt(), anyString(), any(Status.class));
+        verify(taskService).createTask(any(CreateTaskDTO.class));
     }
 
     @Test
@@ -91,16 +94,17 @@ class TaskControllerTest {
         // GIVEN
         Task updatedTask = Task.builder().id(1).name("Updated Task").status(Status.DONE).build();
         Response<Task> expectedResponse = Response.success(200, Messages.SUCCESS_TASK_UPDATED, updatedTask);
-        when(taskService.updateTask(eq(1), anyString(), anyString(), any(LocalDateTime.class), anyInt(), anyString(), any(Status.class))).thenReturn(expectedResponse);
+        UpdateTaskDTO updateTaskDTO = new UpdateTaskDTO(1, "Updated Task", null, null, null, null, Status.DONE);
+        when(taskService.updateTask(any(UpdateTaskDTO.class))).thenReturn(expectedResponse);
 
         // WHEN
-        Response<Task> response = taskController.updateTask(1, "Updated Task", "Desc", LocalDateTime.now().plusDays(1), 4, "Work", Status.DONE);
+        Response<Task> response = taskController.updateTask(updateTaskDTO);
 
         // THEN
         assertEquals(200, response.getStatusCode());
         assertEquals(Messages.SUCCESS_TASK_UPDATED, response.getMessage());
         assertEquals(updatedTask, response.getData());
-        verify(taskService).updateTask(eq(1), anyString(), anyString(), any(LocalDateTime.class), anyInt(), anyString(), any(Status.class));
+        verify(taskService).updateTask(any(UpdateTaskDTO.class));
     }
 
     @Test

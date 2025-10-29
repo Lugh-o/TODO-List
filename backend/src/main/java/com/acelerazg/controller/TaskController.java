@@ -1,12 +1,13 @@
 package com.acelerazg.controller;
 
 import com.acelerazg.common.Response;
+import com.acelerazg.dto.CreateTaskDTO;
+import com.acelerazg.dto.UpdateTaskDTO;
 import com.acelerazg.model.Status;
 import com.acelerazg.model.Task;
 import com.acelerazg.service.TaskService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 public class TaskController {
@@ -16,8 +17,8 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    public Response<Task> createTask(String name, String description, LocalDateTime endDate, int priority, String category, Status status) {
-        return taskService.createTask(name, description, endDate, priority, category, status);
+    public Response<Task> createTask(CreateTaskDTO createTaskDTO) {
+        return taskService.createTask(createTaskDTO);
     }
 
     public Response<Task> getTaskById(int id) {
@@ -28,8 +29,8 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
-    public Response<Task> updateTask(int id, String name, String description, LocalDateTime endDate, Integer priority, String category, Status status) {
-        return taskService.updateTask(id, name, description, endDate, priority, category, status);
+    public Response<Task> updateTask(UpdateTaskDTO updateTaskDTO) {
+        return taskService.updateTask(updateTaskDTO);
     }
 
     public Response<Void> deleteTask(int id) {
