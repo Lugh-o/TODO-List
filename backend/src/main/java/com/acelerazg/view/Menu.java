@@ -10,6 +10,8 @@ import com.acelerazg.exceptions.CancelOperationException;
 import com.acelerazg.model.Reminder;
 import com.acelerazg.model.Status;
 import com.acelerazg.model.Task;
+import com.acelerazg.service.ReminderService;
+import com.acelerazg.service.TaskService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,8 +44,10 @@ public class Menu {
 
     public Menu() {
         this.taskDAO = new TaskDAO();
-        this.taskController = new TaskController(taskDAO);
-        this.reminderController = new ReminderController(taskDAO);
+        ReminderService reminderService = new ReminderService(taskDAO);
+        TaskService taskService = new TaskService(taskDAO);
+        this.taskController = new TaskController(taskService);
+        this.reminderController = new ReminderController(reminderService);
         this.inputReader = new InputReader(new Scanner(System.in));
     }
 
